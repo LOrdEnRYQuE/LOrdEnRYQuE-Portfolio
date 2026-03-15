@@ -1,0 +1,67 @@
+import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/db";
+
+export async function PATCH(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  const session = await getServerSession(authOptions);
+
+  if (!session || session.user.role !== "ADMIN") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const { id } = params;
+    const body = await req.json();
+    const { role } = body;
+
+    const user = await prisma.user.update({
+      where: { id },
+      data: { role },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        createdAt: true
+      }
+    });
+
+    return NextResponse.json(user);
+  } catch (error) {
+    console.error("Failed to update user authorization:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  const session = await getServerSession(authOptions);
+
+  if (!session || session.user.role !== "ADMIN") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const { id } = params;
+
+    // Prevent self-deletion
+    if (id === session.user.id) {
+       return NextResponse.json({ error: "Self-deauthorization prohibited" }, { status: 400 });
+    }
+
+    await prisma.user.delete({
+      where: { id }
+    });
+
+    return NextResponse.json({ success: true, message: "Personnel node purged from fleet" });
+  } catch (error) {
+    console.error("Failed to deauthorize user node:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}

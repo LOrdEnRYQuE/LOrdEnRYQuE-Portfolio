@@ -39,3 +39,26 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# prisma local databases
+/prisma/*.db
+/prisma/*.db-journal
+/prisma/.npm-cache
+
+# AI and IDE folders
+.antigravity/
+.trunk/
+.vscode/
+.windsurf/
+.npm-cache/
+.pnpm-store/
+
+# scratch and large docs
+PLAN/
+*.jsx
+*.mp4
+portfolio-build.md
+react-hydration-fix.md
+
+# local env
+.env.local

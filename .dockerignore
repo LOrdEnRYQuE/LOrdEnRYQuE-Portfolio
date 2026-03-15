@@ -1,0 +1,15 @@
+node_modules
+.next
+.git
+.env
+.env.local
+public/images/og/*.png
+README.md
+docs
+PLAN
+lordenryque_portfolio_mvp.jsx
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-store
+.npm-cache

@@ -1,0 +1,45 @@
+import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/db";
+import { unlink } from "fs/promises";
+import { join } from "path";
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: Promise<{ assetId: string }> }
+) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || session.user.role !== "ADMIN") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { assetId } = await params;
+    
+    const asset = await prisma.asset.findUnique({
+      where: { id: assetId }
+    });
+
+    if (!asset) {
+      return NextResponse.json({ error: "Asset not found" }, { status: 404 });
+    }
+
+    // Attempt to delete physical file
+    try {
+      const filePath = join(process.cwd(), "public", asset.url);
+      await unlink(filePath);
+    } catch (e) {
+      console.warn(`Could not delete physical file: ${asset.url}`, e);
+    }
+
+    await prisma.asset.delete({
+      where: { id: assetId }
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("[ASSET_DELETE]", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}
