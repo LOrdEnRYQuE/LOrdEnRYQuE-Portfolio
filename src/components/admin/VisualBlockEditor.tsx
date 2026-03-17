@@ -15,33 +15,56 @@ import { Reorder } from "framer-motion";
 
 export type BlockType = "Hero" | "Services" | "Stats" | "Projects" | "Contact" | "About";
 
-export interface PageBlock {
-  id: string;
-  type: BlockType;
-  data: any;
+export interface HeroData {
+  badge?: string;
+  title?: string;
+  subtitle?: string;
+  description?: string;
+  buttonText?: string;
+  buttonLink?: string;
 }
+
+export interface ServicesData {
+  title?: string;
+  items?: { title: string; description: string; icon: string; }[];
+}
+
+export interface StatsData {
+  items?: { label: string; value: string; }[];
+}
+
+export type PageBlock = 
+  | { _id: string; type: "Hero"; data: HeroData; }
+  | { _id: string; type: "Services"; data: ServicesData; }
+  | { _id: string; type: "Stats"; data: StatsData; }
+  | { _id: string; type: "Projects" | "Contact" | "About"; data: Record<string, unknown>; };
 
 interface VisualBlockEditorProps {
   blocks: PageBlock[];
   onChange: (blocks: PageBlock[]) => void;
 }
 
+const generateBlockId = () => `block-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+
 export function VisualBlockEditor({ blocks, onChange }: VisualBlockEditorProps) {
   const addBlock = (type: BlockType) => {
-    const newBlock: PageBlock = {
-      id: `block-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    const newBlock = {
+      _id: generateBlockId(),
       type,
       data: getDefaultData(type),
-    };
+    } as PageBlock;
     onChange([...blocks, newBlock]);
   };
 
-  const removeBlock = (id: string) => {
-    onChange(blocks.filter((b) => b.id !== id));
+  const removeBlock = (_id: string) => {
+    onChange(blocks.filter((b) => b._id !== _id));
   };
 
-  const updateBlockData = (id: string, data: any) => {
-    onChange(blocks.map((b) => (b.id === id ? { ...b, data: { ...b.data, ...data } } : b)));
+  const updateBlockData = (id: string, data: Partial<HeroData & ServicesData & StatsData>) => {
+    onChange(blocks.map((b) => {
+      if (b._id !== id) return b;
+      return { ...b, data: { ...b.data, ...data } } as PageBlock;
+    }));
   };
 
   const getDefaultData = (type: BlockType) => {
@@ -73,7 +96,7 @@ export function VisualBlockEditor({ blocks, onChange }: VisualBlockEditorProps) 
       <Reorder.Group axis="y" values={blocks} onReorder={onChange} className="space-y-4">
         {blocks.map((block) => (
           <Reorder.Item 
-            key={block.id} 
+            key={block._id} 
             value={block}
             className="group"
           >
@@ -90,7 +113,7 @@ export function VisualBlockEditor({ blocks, onChange }: VisualBlockEditorProps) 
                   </span>
                 </div>
                 <button 
-                  onClick={() => removeBlock(block.id)}
+                  onClick={() => removeBlock(block._id)}
                   className="p-2 rounded-xl text-red-500/40 hover:text-red-500 hover:bg-red-500/10 transition-all"
                 >
                   <Trash2 size={16} />
@@ -103,23 +126,23 @@ export function VisualBlockEditor({ blocks, onChange }: VisualBlockEditorProps) 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <EditorInput 
                       label="Badge" 
-                      value={block.data.badge} 
-                      onChange={(v: string) => updateBlockData(block.id, { badge: v })} 
+                      value={block.data.badge || ""} 
+                      onChange={(v: string) => updateBlockData(block._id, { badge: v })} 
                     />
                     <EditorInput 
                       label="Title" 
-                      value={block.data.title} 
-                      onChange={(v: string) => updateBlockData(block.id, { title: v })} 
+                      value={block.data.title || ""} 
+                      onChange={(v: string) => updateBlockData(block._id, { title: v })} 
                     />
                     <EditorInput 
                       label="Subtitle" 
-                      value={block.data.subtitle} 
-                      onChange={(v: string) => updateBlockData(block.id, { subtitle: v })} 
+                      value={block.data.subtitle || ""} 
+                      onChange={(v: string) => updateBlockData(block._id, { subtitle: v })} 
                     />
                     <EditorInput 
                       label="Description" 
-                      value={block.data.description} 
-                      onChange={(v: string) => updateBlockData(block.id, { description: v })} 
+                      value={block.data.description || ""} 
+                      onChange={(v: string) => updateBlockData(block._id, { description: v })} 
                       isTextArea
                     />
                   </div>
@@ -129,8 +152,8 @@ export function VisualBlockEditor({ blocks, onChange }: VisualBlockEditorProps) 
                   <div className="space-y-4">
                      <EditorInput 
                       label="Section Title" 
-                      value={block.data.title} 
-                      onChange={(v: string) => updateBlockData(block.id, { title: v })} 
+                      value={block.data.title || ""} 
+                      onChange={(v: string) => updateBlockData(block._id, { title: v })} 
                     />
                     <p className="text-[10px] text-white/20 uppercase font-black">Dynamic items will be managed in future update</p>
                   </div>
@@ -166,7 +189,16 @@ export function VisualBlockEditor({ blocks, onChange }: VisualBlockEditorProps) 
   );
 }
 
-function EditorInput({ label, value, onChange, placeholder, isTextArea }: any) {
+interface EditorInputProps {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  isTextArea?: boolean;
+}
+
+function EditorInput({ label, value, onChange, placeholder, isTextArea }: EditorInputProps) {
+
   return (
     <div className="space-y-2">
       <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">{label}</label>

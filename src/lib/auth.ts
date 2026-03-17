@@ -1,4 +1,4 @@
-import { NextAuthOptions, DefaultSession } from "next-auth";
+import { NextAuthOptions, DefaultSession, User as NextAuthUser } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@convex/_generated/api";
@@ -6,12 +6,8 @@ import bcrypt from "bcryptjs";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
-interface CustomUser {
-  id: string;
-  email?: string | null;
-  name?: string | null;
-  image?: string | null;
-  role?: string;
+interface CustomUser extends NextAuthUser {
+  role: string;
 }
 
 declare module "next-auth" {
@@ -66,11 +62,11 @@ export const authOptions: NextAuthOptions = {
 
         return {
           id: user._id,
-          name: user.name,
-          email: user.email,
-          image: user.image,
-          role: user.role,
-        } as any;
+          name: user.name ?? "",
+          email: user.email ?? "",
+          image: user.image ?? "",
+          role: user.role ?? "USER",
+        };
       }
     })
   ],

@@ -15,15 +15,15 @@ import AIConcierge, { AgentConfig } from "@/components/ui/AIConcierge";
 import IconPicker from "@/components/admin/IconPicker";
 
 interface KnowledgeDoc {
-  id: string;
+  _id: string;
   fileName: string;
   type: string;
   content?: string;
-  createdAt: string;
+  _creationTime: number;
 }
 
 interface Agent {
-  id: string;
+  _id: string;
   name: string;
   personality?: string;
   config: AgentConfig;
@@ -434,7 +434,7 @@ export default function AgentEditorPage({ params }: { params: Promise<{ agentId:
                       </div>
                     ) : (
                       knowledge.map((doc) => (
-                        <div key={doc.id} className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5 group hover:border-white/10 transition-all">
+                        <div key={doc._id} className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5 group hover:border-white/10 transition-all">
                           <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-lg bg-accent/20 flex items-center justify-center text-accent">
                               <FileText size={16} />
@@ -449,7 +449,7 @@ export default function AgentEditorPage({ params }: { params: Promise<{ agentId:
                              </div>
                           </div>
                           <button
-                            onClick={() => deleteKnowledge(doc.id)}
+                            onClick={() => deleteKnowledge(doc._id)}
                             className="p-2 text-white/10 hover:text-red-400 transition-colors"
                           >
                             <Trash2 size={14} />
@@ -480,7 +480,7 @@ export default function AgentEditorPage({ params }: { params: Promise<{ agentId:
                     </div>
                     <button
                       onClick={() => {
-                        const code = `<script src="${window.location.origin}/api/agents/${agent?.id}/widget.js" async></script>`;
+                        const code = `<script src="${window.location.origin}/api/agents/${agent?._id}/widget.js" async></script>`;
                         navigator.clipboard.writeText(code);
                         setCopied("script");
                         setTimeout(() => setCopied(null), 2000);
@@ -491,7 +491,7 @@ export default function AgentEditorPage({ params }: { params: Promise<{ agentId:
                     </button>
                   </div>
                   <div className="bg-black/40 rounded-2xl p-6 font-mono text-[10px] leading-relaxed text-white/60 break-all select-all">
-                    {`<script src="${typeof window !== "undefined" ? window.location.origin : ""}/api/agents/${agent?.id}/widget.js" async></script>`}
+                    {`<script src="${typeof window !== "undefined" ? window.location.origin : ""}/api/agents/${agent?._id}/widget.js" async></script>`}
                   </div>
                   <p className="text-[10px] text-white/30 uppercase font-black tracking-widest">
                     Paste this code before the closing &lt;/body&gt; tag of your website.
@@ -505,7 +505,7 @@ export default function AgentEditorPage({ params }: { params: Promise<{ agentId:
                       Share & QR
                     </div>
                     <Link 
-                      href={`/agent/${agent?.id}`}
+                      href={`/agent/${agent?._id}`}
                       target="_blank"
                       className="px-3 py-1.5 bg-accent/10 hover:bg-accent/20 text-accent text-[10px] font-black uppercase tracking-widest rounded-lg transition-all flex items-center gap-2"
                     >
@@ -516,7 +516,7 @@ export default function AgentEditorPage({ params }: { params: Promise<{ agentId:
                   <div className="flex flex-col sm:flex-row gap-8 items-center">
                     <div className="bg-white p-4 rounded-3xl shrink-0">
                       <Image 
-                        src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${typeof window !== "undefined" ? encodeURIComponent(`${window.location.origin}/agent/${agent?.id}`) : ""}`}
+                        src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${typeof window !== "undefined" ? encodeURIComponent(`${window.location.origin}/agent/${agent?._id}`) : ""}`}
                         alt="Agent QR Code"
                         width={96}
                         height={96}
@@ -529,10 +529,10 @@ export default function AgentEditorPage({ params }: { params: Promise<{ agentId:
                         Share this QR code with your team for mobile testing, or use the direct link to preview the full-screen branded experience.
                       </p>
                       <div className="bg-black/40 rounded-2xl p-4 font-mono text-[9px] leading-relaxed text-white/60 break-all select-all flex items-center justify-between gap-4">
-                        <span className="truncate">{typeof window !== "undefined" ? `${window.location.origin}/agent/${agent?.id}` : ""}</span>
+                        <span className="truncate">{typeof window !== "undefined" ? `${window.location.origin}/agent/${agent?._id}` : ""}</span>
                         <button
                           onClick={() => {
-                            navigator.clipboard.writeText(`${window.location.origin}/agent/${agent?.id}`);
+                            navigator.clipboard.writeText(`${window.location.origin}/agent/${agent?._id}`);
                             setCopied("share");
                             setTimeout(() => setCopied(null), 2000);
                           }}
@@ -554,7 +554,7 @@ export default function AgentEditorPage({ params }: { params: Promise<{ agentId:
                     </div>
                     <button
                       onClick={() => {
-                        const code = `<iframe src="${window.location.origin}/agent/${agent?.id}" width="100%" height="600" frameborder="0"></iframe>`;
+                        const code = `<iframe src="${window.location.origin}/agent/${agent?._id}" width="100%" height="600" frameborder="0"></iframe>`;
                         navigator.clipboard.writeText(code);
                         setCopied("iframe");
                         setTimeout(() => setCopied(null), 2000);
@@ -565,7 +565,7 @@ export default function AgentEditorPage({ params }: { params: Promise<{ agentId:
                     </button>
                   </div>
                   <div className="bg-black/40 rounded-2xl p-6 font-mono text-[10px] leading-relaxed text-white/60 break-all select-all">
-                    {`<iframe src="${typeof window !== "undefined" ? window.location.origin : ""}/agent/${agent?.id}" width="100%" height="600" frameborder="0"></iframe>`}
+                    {`<iframe src="${typeof window !== "undefined" ? window.location.origin : ""}/agent/${agent?._id}" width="100%" height="600" frameborder="0"></iframe>`}
                   </div>
                 </div>
 
@@ -579,7 +579,7 @@ export default function AgentEditorPage({ params }: { params: Promise<{ agentId:
                     <div className="space-y-2">
                       <p className="text-[10px] uppercase font-black tracking-widest">Base URL</p>
                       <div className="p-3 bg-white/5 rounded-xl text-[10px] font-mono select-all text-white/60">
-                        {typeof window !== "undefined" ? `${window.location.origin}/api/agents/${agent?.id}/chat` : ""}
+                        {typeof window !== "undefined" ? `${window.location.origin}/api/agents/${agent?._id}/chat` : ""}
                       </div>
                     </div>
                   </div>

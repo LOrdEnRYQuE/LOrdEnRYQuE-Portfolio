@@ -32,13 +32,13 @@ interface Stats {
 }
 
 interface Lead {
-  id: string;
+  _id: string;
   name: string;
   email: string;
   concept: string;
   industry: string;
   status: string;
-  createdAt: string;
+  _creationTime: number;
 }
 
 function StatCard({
@@ -142,7 +142,7 @@ export default function AdminOverview() {
         if (Array.isArray(leadsData)) {
           setRecentLeads(
             [...leadsData]
-              .sort((a: Lead, b: Lead) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+              .sort((a: Lead, b: Lead) => b._creationTime - a._creationTime)
               .slice(0, 5)
           );
         }
@@ -171,8 +171,8 @@ export default function AdminOverview() {
     { label: "Blog", desc: "Publish content", icon: FileText, href: "/admin/blog", color: "text-blue-400" },
   ];
 
-  const timeAgo = (date: string) => {
-    const diff = Date.now() - new Date(date).getTime();
+  const timeAgo = (timestamp: number) => {
+    const diff = Date.now() - timestamp;
     const mins = Math.floor(diff / 60000);
     if (mins < 60) return `${mins}m ago`;
     const hrs = Math.floor(mins / 60);
@@ -248,7 +248,7 @@ export default function AdminOverview() {
             ) : (
               recentLeads.map((lead, i) => (
                 <motion.div
-                  key={lead.id}
+                  key={lead._id}
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.3 + i * 0.05 }}
@@ -265,7 +265,7 @@ export default function AdminOverview() {
                     <p className="text-[11px] text-white/40 truncate">{lead.concept} · {lead.email}</p>
                   </div>
                   <div className="text-right shrink-0">
-                    <p className="text-[10px] text-white/30">{timeAgo(lead.createdAt)}</p>
+                    <p className="text-[10px] text-white/30">{timeAgo(lead._creationTime)}</p>
                     <p className="text-[10px] text-white/20">{lead.industry}</p>
                   </div>
                 </motion.div>

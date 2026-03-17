@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import { 
   ArrowLeft, MessageSquare, Clock, User, 
   Bot, Loader2, ChevronRight
@@ -11,17 +10,16 @@ import { formatDistanceToNow } from "date-fns";
 import { use } from "react";
 
 interface Conversation {
-  id: string;
+  _id: string;
   visitorId: string | null;
-  createdAt: string;
-  updatedAt: string;
+  _creationTime: number;
   _count: {
     messages: number;
   };
 }
 
 interface Agent {
-  id: string;
+  _id: string;
   name: string;
 }
 
@@ -31,7 +29,7 @@ export default function AgentConversationsPage({ params }: { params: Promise<{ a
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedConvId, setSelectedConvId] = useState<string | null>(null);
-  const [messages, setMessages] = useState<{ id: string; role: string; content: string; createdAt: string }[]>([]);
+  const [messages, setMessages] = useState<{ _id: string; role: string; content: string; _creationTime: number }[]>([]);
   const [isMessagesLoading, setIsMessagesLoading] = useState(false);
 
   const fetchAgent = async () => {
@@ -108,10 +106,10 @@ export default function AgentConversationsPage({ params }: { params: Promise<{ a
                 </div>
               ) : conversations.map((conv) => (
                 <button
-                  key={conv.id}
-                  onClick={() => fetchMessages(conv.id)}
+                  key={conv._id}
+                  onClick={() => fetchMessages(conv._id)}
                   className={`w-full text-left p-6 rounded-[32px] border transition-all flex flex-col gap-3 group ${
-                    selectedConvId === conv.id 
+                    selectedConvId === conv._id 
                       ? 'bg-white/10 border-accent/30 ring-1 ring-accent/20' 
                       : 'bg-white/5 border-white/5 hover:border-white/10 hover:bg-white/7'
                   }`}
@@ -119,12 +117,12 @@ export default function AgentConversationsPage({ params }: { params: Promise<{ a
                   <div className="flex items-center justify-between w-full">
                     <div className="flex items-center gap-2 text-xs font-bold text-white/80">
                       <Clock size={14} className="text-accent" />
-                      {formatDistanceToNow(new Date(conv.updatedAt))} ago
+                      {formatDistanceToNow(new Date(conv._creationTime))} ago
                     </div>
-                    <ChevronRight size={14} className={`transition-transform ${selectedConvId === conv.id ? 'rotate-90 text-accent' : 'text-white/20'}`} />
+                    <ChevronRight size={14} className={`transition-transform ${selectedConvId === conv._id ? 'rotate-90 text-accent' : 'text-white/20'}`} />
                   </div>
                   <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-white/30">
-                    <span>ID: {conv.id.slice(-8)}</span>
+                    <span>ID: {conv._id.slice(-8)}</span>
                     <span>{conv._count.messages} MESSAGES</span>
                   </div>
                 </button>
@@ -169,7 +167,7 @@ export default function AgentConversationsPage({ params }: { params: Promise<{ a
                   <div className="flex-1 p-8 space-y-8 overflow-y-auto max-h-[60vh] custom-scrollbar">
                     {messages.map((msg, i) => (
                       <div 
-                        key={msg.id} 
+                        key={msg._id} 
                         className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} space-y-2 animate-in fade-in slide-in-from-bottom-2`}
                         style={{ animationDelay: `${i * 50}ms` }}
                       >
@@ -185,7 +183,7 @@ export default function AgentConversationsPage({ params }: { params: Promise<{ a
                           {msg.content}
                         </div>
                         <span className="text-[10px] text-white/10 font-bold uppercase tracking-tight">
-                          {formatDistanceToNow(new Date(msg.createdAt))} ago
+                          {formatDistanceToNow(new Date(msg._creationTime))} ago
                         </span>
                       </div>
                     ))}

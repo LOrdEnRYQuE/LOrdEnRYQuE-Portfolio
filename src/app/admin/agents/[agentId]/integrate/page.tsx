@@ -10,7 +10,7 @@ import Link from "next/link";
 import { AgentConfig } from "@/components/ui/AIConcierge";
 
 interface Agent {
-  id: string;
+  _id: string;
   name: string;
   config: AgentConfig;
 }
@@ -39,7 +39,7 @@ export default function IntegrationPage({ params }: { params: Promise<{ agentId:
 
   const webSnippet = `<!-- Neural Agent: ${agent.name} -->
 <script 
-  src="${baseUrl}/api/agents/${agent.id}/widget.js" 
+  src="${baseUrl}/api/agents/${agent._id}/widget.js" 
   async
 ></script>`;
 
@@ -51,13 +51,13 @@ export function NeuralAgent() {
   useEffect(() => {
     // Neural Synchronization Protocol
     const script = document.createElement("script");
-    script.src = "${baseUrl}/api/agents/${agent.id}/widget.js";
+    script.src = "${baseUrl}/api/agents/${agent._id}/widget.js";
     script.async = true;
     document.body.appendChild(script);
     
     return () => {
       document.body.removeChild(script);
-      const widget = document.getElementById("ai-agent-widget-${agent.id}");
+      const widget = document.getElementById("ai-agent-widget-${agent._id}");
       if (widget) widget.remove();
     };
   }, []);

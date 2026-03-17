@@ -11,7 +11,7 @@ import { useI18n } from "@/lib/i18n";
 import { useState, useEffect } from "react";
 
 interface PortfolioProject {
-  id: string;
+  _id: string;
   slug: string;
   title: string;
   summary: string;
@@ -21,7 +21,7 @@ interface PortfolioProject {
   featured: boolean;
   liveUrl?: string;
   githubUrl?: string;
-  updatedAt?: string;
+  _creationTime?: number;
 }
 
 export default function ProjectsPage() {
@@ -41,9 +41,9 @@ export default function ProjectsPage() {
 
   // Use dynamic projects if available, otherwise fallback to static
   // In a real migration, we match slugs to avoid duplicates
-  const displayProjects: any[] = dynamicProjects.length > 0 
+  const displayProjects: PortfolioProject[] = dynamicProjects.length > 0 
     ? dynamicProjects 
-    : projects.map(p => ({ ...p, id: p.slug }));
+    : projects.map(p => ({ ...p, _id: p.slug } as PortfolioProject));
 
   return (
     <div className="py-24 px-6 md:px-10 max-w-7xl mx-auto min-h-screen">
@@ -74,7 +74,7 @@ export default function ProjectsPage() {
 
           return (
             <motion.div
-              key={project.id || project.slug}
+              key={project._id || project.slug}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: idx * 0.1 }}

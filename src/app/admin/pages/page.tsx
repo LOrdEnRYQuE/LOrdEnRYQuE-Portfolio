@@ -29,7 +29,7 @@ import {
 import Link from "next/link";
 
 interface Page {
-  id: string;
+  _id: string;
   slug: string;
   title: string;
   description: string | null;
@@ -37,7 +37,7 @@ interface Page {
   inNavbar: boolean;
   order: number;
   content: string;
-  updatedAt: string;
+  _creationTime: number;
 }
 
 // Hardcoded site routes that always exist
@@ -172,7 +172,7 @@ export default function PageManager() {
 
   const toggleStatus = async (id: string, field: "published" | "inNavbar", value: boolean) => {
     setPages((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, [field]: !value } : p))
+      prev.map((p) => (p._id === id ? { ...p, [field]: !value } : p))
     );
     try {
       const res = await fetch("/api/admin/pages", {
@@ -187,7 +187,7 @@ export default function PageManager() {
   };
 
   const deletePage = async (id: string) => {
-    setPages((prev) => prev.filter((p) => p.id !== id));
+    setPages((prev) => prev.filter((p) => p._id !== id));
     setDeleteConfirm(null);
     try {
       await fetch(`/api/admin/pages?id=${id}`, { method: "DELETE" });
@@ -208,8 +208,8 @@ export default function PageManager() {
       r.slug.toLowerCase().includes(search.toLowerCase())
   );
 
-  const timeAgo = (date: string) => {
-    const diff = Date.now() - new Date(date).getTime();
+  const timeAgo = (date: number) => {
+    const diff = Date.now() - date;
     const days = Math.floor(diff / 86400000);
     if (days < 1) return "Today";
     if (days === 1) return "Yesterday";
@@ -384,7 +384,7 @@ export default function PageManager() {
                 <div className="divide-y divide-white/5">
                   {filteredDynamic.map((page, i) => (
                     <motion.div
-                      key={page.id}
+                      key={page._id}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: i * 0.04 }}
@@ -394,7 +394,7 @@ export default function PageManager() {
                       <div
                         className={`shrink-0 w-2 h-2 rounded-full ${page.published ? "bg-emerald-400 shadow-emerald-glow" : "bg-white/20"}`}
                       />
-
+ 
                       {/* Info */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-0.5">
@@ -407,17 +407,17 @@ export default function PageManager() {
                         </div>
                         <div className="flex items-center gap-3">
                           <code className="text-[11px] text-white/40 font-mono">/{page.slug}</code>
-                          <span className="text-[11px] text-white/25">· {timeAgo(page.updatedAt)}</span>
+                          <span className="text-[11px] text-white/25">· {timeAgo(page._creationTime)}</span>
                         </div>
                         {page.description && (
                           <p className="text-[11px] text-white/30 mt-0.5 truncate max-w-md">{page.description}</p>
                         )}
                       </div>
-
+ 
                       {/* Toggles */}
                       <div className="flex items-center gap-3 shrink-0">
                         <button
-                          onClick={() => toggleStatus(page.id, "published", page.published)}
+                          onClick={() => toggleStatus(page._id, "published", page.published)}
                           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-wider border transition-all ${
                             page.published
                               ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20"
@@ -427,9 +427,9 @@ export default function PageManager() {
                           {page.published ? <CheckCircle2 size={11} /> : <XCircle size={11} />}
                           {page.published ? "Live" : "Draft"}
                         </button>
-
+ 
                         <button
-                          onClick={() => toggleStatus(page.id, "inNavbar", page.inNavbar)}
+                          onClick={() => toggleStatus(page._id, "inNavbar", page.inNavbar)}
                           className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all ${
                             page.inNavbar
                               ? "bg-accent/10 border-accent/20 text-accent"
@@ -440,7 +440,7 @@ export default function PageManager() {
                           {page.inNavbar ? <Eye size={15} /> : <EyeOff size={15} />}
                         </button>
                       </div>
-
+ 
                       {/* Actions */}
                       <div className="flex items-center gap-2 shrink-0 opacity-40 group-hover:opacity-100 transition-opacity">
                         <Link href={`/${page.slug}`} target="_blank">
@@ -448,13 +448,13 @@ export default function PageManager() {
                             <ExternalLink size={14} />
                           </button>
                         </Link>
-                        <Link href={`/admin/pages/${page.id}`}>
+                        <Link href={`/admin/pages/${page._id}`}>
                           <button className="w-9 h-9 rounded-xl bg-accent/10 border border-accent/20 text-accent hover:bg-accent hover:text-background flex items-center justify-center transition-all" title="Edit">
                             <Edit3 size={14} />
                           </button>
                         </Link>
                         <button
-                          onClick={() => setDeleteConfirm(page.id)}
+                          onClick={() => setDeleteConfirm(page._id)}
                           className="w-9 h-9 rounded-xl bg-white/5 border border-white/8 flex items-center justify-center text-white/30 hover:text-red-400 hover:border-red-400/20 hover:bg-red-400/10 transition-all"
                           title="Delete"
                         >

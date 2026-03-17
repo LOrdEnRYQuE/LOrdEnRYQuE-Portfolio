@@ -20,13 +20,13 @@ import { motion, AnimatePresence } from "framer-motion";
 
 
 interface Project {
-  id: string;
+  _id: string;
   title: string;
   description: string | null;
   status: string;
   health: string;
   efficiency: number;
-  updatedAt: string;
+  _creationTime: number;
   _count: {
     stages: number;
     documents: number;
@@ -39,7 +39,7 @@ interface Project {
 }
 
 interface UserSummary {
-  id: string;
+  _id: string;
   name: string | null;
   email: string | null;
 }
@@ -227,7 +227,7 @@ export default function ProjectsPage() {
                       >
                         <option value="" disabled className="bg-black text-white/20">Select a client...</option>
                         {users.map(user => (
-                          <option key={user.id} value={user.id} className="bg-black text-white">
+                          <option key={user._id} value={user._id} className="bg-black text-white">
                             {user.name || user.email}
                           </option>
                         ))}
@@ -322,7 +322,7 @@ export default function ProjectsPage() {
         ) : (
           filteredProjects.map((project, i) => (
             <motion.div
-              key={project.id}
+              key={project._id}
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 + i * 0.1 }}
@@ -355,7 +355,7 @@ export default function ProjectsPage() {
                       </div>
                       <div className="w-1 h-1 rounded-full bg-white/10" />
                       <div className="flex items-center gap-1.5 text-[10px] font-bold text-white/30 uppercase tracking-widest">
-                        <Clock size={12} /> {new Date(project.updatedAt).toLocaleDateString()}
+                        <Clock size={12} /> {new Date(project._creationTime).toLocaleDateString()}
                       </div>
                   </div>
                 </div>
@@ -394,7 +394,7 @@ export default function ProjectsPage() {
                       <Settings2 size={16} />
                     </button>
                     <a 
-                      href={`/admin/projects/${project.id}`}
+                      href={`/admin/projects/${project._id}`}
                       className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/5 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all"
                     >
                       Manage <ChevronRight size={14} />

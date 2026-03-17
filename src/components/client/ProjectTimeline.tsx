@@ -5,7 +5,15 @@ import { Check } from "lucide-react";
 
 import { useI18n } from "@/lib/i18n";
 
-export default function ProjectTimeline({ stages: initialStages }: { stages?: any[] }) {
+interface StageProp {
+  _id: string;
+  title: string;
+  description?: string;
+  status: string;
+}
+
+export default function ProjectTimeline({ stages: initialStages }: { stages?: StageProp[] }) {
+
   const { t } = useI18n();
 
   const MOCK_STAGES = [
@@ -17,7 +25,7 @@ export default function ProjectTimeline({ stages: initialStages }: { stages?: an
   ];
 
   const STAGES = initialStages?.map(s => ({
-    id: s.id,
+    id: s._id,
     name: s.title,
     description: s.description,
     status: s.status.toLowerCase().replace('_', '-')
@@ -40,7 +48,7 @@ export default function ProjectTimeline({ stages: initialStages }: { stages?: an
               stage.status === 'in-progress' ? 'bg-background border-slate-400 text-slate-400 animate-pulse' :
               'bg-background border-white/10 text-gray-600'
             }`}>
-              {stage.status === 'completed' ? <Check size={20} /> : <span>{stage.id}</span>}
+              {stage.status === 'completed' ? <Check size={20} /> : <span>{idx + 1}</span>}
             </div>
 
             <div className="space-y-1">

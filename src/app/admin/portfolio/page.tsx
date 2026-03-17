@@ -8,8 +8,6 @@ import {
   Eye, 
   Edit3, 
   Trash2,
-  ExternalLink,
-  Github,
   CheckCircle2,
   Clock,
   Layers,
@@ -19,14 +17,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
 interface PortfolioProject {
-  id: string;
+  _id: string;
   slug: string;
   title: string;
   summary: string;
   status: string;
   featured: boolean;
   cover: string;
-  updatedAt: string;
 }
 
 export default function AdminPortfolioPage() {
@@ -112,7 +109,7 @@ export default function AdminPortfolioPage() {
             ))
           ) : filteredProjects.map((project, idx) => (
             <motion.div
-              key={project.id}
+              key={project._id}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
@@ -155,7 +152,7 @@ export default function AdminPortfolioPage() {
                 <div className="flex items-center justify-between pt-6 border-t border-white/5">
                   <div className="flex items-center gap-2">
                      <Link 
-                      href={`/admin/portfolio/${project.id}/edit`}
+                      href={`/admin/portfolio/${project._id}/edit`}
                       className="p-2 rounded-xl bg-white/5 hover:bg-accent/20 hover:text-accent transition-all"
                      >
                        <Edit3 size={16} />
@@ -170,7 +167,7 @@ export default function AdminPortfolioPage() {
                   </div>
 
                   <button 
-                    onClick={() => handleDelete(project.id)}
+                    onClick={() => handleDelete(project._id)}
                     className="p-2 rounded-xl bg-white/5 hover:bg-red-500/20 hover:text-red-500 transition-all"
                   >
                     <Trash2 size={16} />

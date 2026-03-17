@@ -12,13 +12,12 @@ import { formatDistanceToNow } from "date-fns";
 import { AgentConfig } from "@/components/ui/AIConcierge";
 
 interface Agent {
-  id: string;
+  _id: string;
   name: string;
   personality: string;
   config: AgentConfig;
   status: string;
-  createdAt: string;
-  updatedAt: string;
+  _creationTime: number;
   lastProcessedAt?: string;
   _count?: {
     conversations: number;
@@ -60,7 +59,7 @@ export default function AgentDashboard() {
       const res = await fetch(`/api/agents/${id}`, { method: "DELETE" });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
-      setAgents(prev => prev.filter(a => a.id !== id));
+      setAgents(prev => prev.filter(a => a._id !== id));
       setSelectedIds(prev => prev.filter(i => i !== id));
     } catch (err) {
       alert("Failed to delete agent.");
@@ -74,7 +73,7 @@ export default function AgentDashboard() {
     try {
       // Parallel deletes for now as we don't have a bulk API endpoint
       await Promise.all(selectedIds.map(id => fetch(`/api/agents/${id}`, { method: "DELETE" })));
-      setAgents(prev => prev.filter(a => !selectedIds.includes(a.id)));
+      setAgents(prev => prev.filter(a => !selectedIds.includes(a._id)));
       setSelectedIds([]);
     } catch (err) {
       alert("Failed to delete some agents.");
@@ -189,7 +188,7 @@ export default function AgentDashboard() {
             />
           </div>
           <button 
-            onClick={() => setSelectedIds(selectedIds.length === filteredAgents.length ? [] : filteredAgents.map(a => a.id))}
+            onClick={() => setSelectedIds(selectedIds.length === filteredAgents.length ? [] : filteredAgents.map(a => a._id))}
             className="px-8 py-6 bg-white/5 border border-white/5 rounded-3xl text-[10px] font-black uppercase tracking-widest text-white/20 hover:text-white hover:border-white/10 transition-all flex items-center gap-3"
           >
              <Layout size={16} /> {selectedIds.length === filteredAgents.length ? 'Deselect All' : 'Select Fleet'}
@@ -234,14 +233,14 @@ export default function AgentDashboard() {
             <AnimatePresence mode="popLayout">
               {filteredAgents.map((agent) => (
                 <motion.div
-                  key={agent.id}
+                  key={agent._id}
                   layout
                   initial={{ opacity: 0, scale: 0.98 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.98 }}
-                  onClick={() => toggleSelection(agent.id)}
+                  onClick={() => toggleSelection(agent._id)}
                   className={`glass-card-hover group rounded-[48px] p-10 border flex flex-col gap-10 transition-all hover:bg-white/3 shadow-2xl shadow-black relative overflow-hidden cursor-pointer ${
-                    selectedIds.includes(agent.id) ? 'border-accent bg-accent/2' : 'border-white/5'
+                    selectedIds.includes(agent._id) ? 'border-accent bg-accent/2' : 'border-white/5'
                   }`}
                 >
                   {/* Subtle Background Accent */}
@@ -274,19 +273,19 @@ export default function AgentDashboard() {
                         <div className="flex items-center gap-3">
                            <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">{agent.status}</span>
                            <span className="w-1 h-1 rounded-full bg-white/10" />
-                           <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">{formatDistanceToNow(new Date(agent.createdAt))} ago</span>
+                           <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">{formatDistanceToNow(new Date(agent._creationTime))} ago</span>
                         </div>
                       </div>
                     </div>
                     
                     <div className="flex gap-4 items-center">
                       <div className={`w-6 h-6 rounded-full border-2 transition-all flex items-center justify-center ${
-                        selectedIds.includes(agent.id) ? 'bg-accent border-accent text-background' : 'border-white/10'
+                        selectedIds.includes(agent._id) ? 'bg-accent border-accent text-background' : 'border-white/10'
                       }`}>
-                        {selectedIds.includes(agent.id) && <Plus size={14} className="rotate-45" />}
+                        {selectedIds.includes(agent._id) && <Plus size={14} className="rotate-45" />}
                       </div>
                       <button 
-                        onClick={(e) => { e.stopPropagation(); handleDelete(agent.id); }}
+                        onClick={(e) => { e.stopPropagation(); handleDelete(agent._id); }}
                         className="p-4 rounded-2xl bg-white/5 text-white/10 hover:bg-red-500/10 hover:text-red-400 transition-all border border-white/5 shadow-lg"
                       >
                         <Trash2 size={20} />
@@ -313,13 +312,13 @@ export default function AgentDashboard() {
                     
                     <div className="flex items-center gap-3 w-full sm:w-auto" onClick={(e) => e.stopPropagation()}>
                       <Link 
-                        href={`/admin/agents/${agent.id}/edit`}
+                        href={`/admin/agents/${agent._id}/edit`}
                         className="flex-1 sm:flex-none text-center px-8 py-4 bg-white/5 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] border border-white/5 hover:bg-accent hover:text-background hover:border-accent transition-all shadow-xl"
                       >
                         Manage Node
                       </Link>
                       <Link 
-                        href={`/admin/agents/${agent.id}/integrate`}
+                        href={`/admin/agents/${agent._id}/integrate`}
                         className="p-4 bg-white/5 rounded-2xl border border-white/5 hover:text-accent transition-all hover:bg-white/10"
                         title="Integration SDK"
                       >

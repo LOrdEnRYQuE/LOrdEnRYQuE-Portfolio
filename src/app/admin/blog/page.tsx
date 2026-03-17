@@ -17,15 +17,14 @@ import Link from "next/link";
 import { format } from "date-fns";
 
 interface Post {
-  id: string;
+  _id: string;
   title: string;
   excerpt: string;
   content: string;
   slug: string;
   published: boolean;
   tags: string; // JSON string
-  createdAt: string;
-  updatedAt: string;
+  _creationTime: number;
 }
 
 export default function AdminBlogPage() {
@@ -103,7 +102,7 @@ export default function AdminBlogPage() {
             const tags = JSON.parse(post.tags) as string[];
             return (
               <motion.div
-                key={post.id}
+                key={post._id}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
@@ -127,7 +126,7 @@ export default function AdminBlogPage() {
                   <div className="flex items-center gap-4 text-[10px] font-black text-white/30 uppercase tracking-[0.2em] mb-4">
                     <div className="flex items-center gap-1.5">
                       <Calendar size={12} />
-                      {format(new Date(post.createdAt), "MMM d, yyyy")}
+                      {format(new Date(post._creationTime), "MMM d, yyyy")}
                     </div>
                   </div>
 
@@ -150,7 +149,7 @@ export default function AdminBlogPage() {
                   <div className="flex items-center justify-between pt-6 border-t border-white/5">
                     <div className="flex items-center gap-2">
                        <Link 
-                        href={`/admin/blog/${post.id}/edit`}
+                        href={`/admin/blog/${post._id}/edit`}
                         className="p-2 rounded-xl bg-white/5 hover:bg-accent/20 hover:text-accent transition-all"
                        >
                          <Edit3 size={16} />

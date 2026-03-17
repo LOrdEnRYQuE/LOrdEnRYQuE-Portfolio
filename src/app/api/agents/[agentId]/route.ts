@@ -99,13 +99,19 @@ export async function PATCH(
     const validatedData = agentSchema.parse(body);
 
     // If config is provided as object, stringify it for DB
-    const updateArgs: any = { 
+    const { config: configObj, ...otherData } = validatedData;
+    const updateArgs: {
+      id: Id<"agents">;
+      name?: string;
+      description?: string;
+      personality?: string;
+      config?: string;
+      status?: "ACTIVE" | "INACTIVE" | "DRAFT";
+    } = { 
       id: agentId as Id<"agents">,
-      ...validatedData 
+      ...otherData,
+      ...(configObj ? { config: JSON.stringify(configObj) } : {})
     };
-    if (validatedData.config) {
-      updateArgs.config = JSON.stringify(validatedData.config);
-    }
 
     await convex.mutation(api.agents.update, updateArgs);
 

@@ -20,14 +20,21 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
 
+interface User {
+  _id: Id<"users">;
+  _creationTime: number;
+  name?: string;
+  email?: string;
+  role: string;
+}
+
 export default function UserFleet() {
   const users = useQuery(api.users.listUsers);
-  const createUser = useMutation(api.users.createUser);
   const updateUser = useMutation(api.users.updateUser);
   const removeUser = useMutation(api.users.remove);
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedUser, setSelectedUser] = useState<any | null>(null);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [userFormData, setUserFormData] = useState({

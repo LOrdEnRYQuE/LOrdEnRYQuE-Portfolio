@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 
 interface ProjectStage {
-  id: string;
+  _id: string;
   title: string;
   description: string;
   status: string;
@@ -30,18 +30,18 @@ interface ProjectStage {
 }
 
 interface ProjectDocument {
-  id: string;
+  _id: string;
   title: string;
   type: string;
   size?: string;
 }
 
 interface Project {
-  id: string;
+  _id: string;
   title: string;
   description: string | null;
   status: string;
-  createdAt: string;
+  _creationTime: number;
   efficiency: number;
   health: string;
   documents: ProjectDocument[];
@@ -122,7 +122,7 @@ export default function ProjectDetailPage() {
     const nextStatus = statusCycle[(statusCycle.indexOf(currentStatus) + 1) % statusCycle.length];
     
     // Optimistic update
-    setStages(stages.map(s => s.id === stageId ? { ...s, status: nextStatus } : s));
+    setStages(stages.map(s => s._id === stageId ? { ...s, status: nextStatus } : s));
 
     try {
       await fetch(`/api/admin/projects/${id}/stages/${stageId}`, {
@@ -140,7 +140,7 @@ export default function ProjectDetailPage() {
     if (!confirm("Deconstruct this deployment node?")) return;
     
     // Optimistic update
-    setStages(stages.filter(s => s.id !== stageId));
+    setStages(stages.filter(s => s._id !== stageId));
 
     try {
       await fetch(`/api/admin/projects/${id}/stages/${stageId}`, {
@@ -233,7 +233,7 @@ export default function ProjectDetailPage() {
                       Status: {project.status}
                    </div>
                    <div className="flex items-center gap-2 text-[10px] font-black text-white/20 uppercase tracking-widest">
-                      <Calendar size={12} /> Established: {new Date(project.createdAt).toLocaleDateString()}
+                      <Calendar size={12} /> Established: {new Date(project._creationTime).toLocaleDateString()}
                    </div>
                 </div>
               </div>
@@ -253,7 +253,7 @@ export default function ProjectDetailPage() {
                     <div className="space-y-2">
                        <label className="text-[9px] font-black uppercase tracking-widest text-white/30 ml-2">Identifier Hash</label>
                        <div className="w-full bg-white/5 border border-white/5 rounded-2xl px-6 py-4 text-xs font-mono font-bold text-white/40 overflow-hidden text-ellipsis whitespace-nowrap">
-                          {project.id}
+                          {project._id}
                        </div>
                     </div>
                     <div className="space-y-2">
@@ -291,14 +291,14 @@ export default function ProjectDetailPage() {
               <div className="space-y-3">
                  {stages.map((stage) => (
                    <motion.div
-                    key={stage.id}
+                    key={stage._id}
                     className="flex items-center gap-4 p-6 rounded-3xl bg-white/2 border border-white/5 hover:border-white/10 transition-all group"
                    >
                       <div className="cursor-grab text-white/10 group-hover:text-white/40">
                          <GripVertical size={20} />
                       </div>
                       <button 
-                        onClick={() => handleUpdateStageStatus(stage.id, stage.status)}
+                        onClick={() => handleUpdateStageStatus(stage._id, stage.status)}
                         className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 transition-all hover:scale-105 active:scale-95 ${
                         stage.status === 'COMPLETED' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
                         stage.status === 'IN_PROGRESS' ? 'bg-accent/10 text-accent border border-accent/20 shadow-accent-glow-sm' :
@@ -314,7 +314,7 @@ export default function ProjectDetailPage() {
                       </div>
                       <div className="flex items-center gap-2">
                          <button 
-                           onClick={() => handleUpdateStageStatus(stage.id, stage.status)}
+                           onClick={() => handleUpdateStageStatus(stage._id, stage.status)}
                            className={`px-2 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest transition-colors ${
                             stage.status === 'COMPLETED' ? 'text-emerald-400 bg-emerald-400/5' :
                             stage.status === 'IN_PROGRESS' ? 'text-accent bg-accent/5' :
@@ -323,7 +323,7 @@ export default function ProjectDetailPage() {
                            {stage.status}
                          </button>
                          <button 
-                           onClick={() => handleDeleteStage(stage.id)}
+                           onClick={() => handleDeleteStage(stage._id)}
                            className="p-2 rounded-xl hover:bg-red-500/10 text-white/10 hover:text-red-400 transition-all">
                             <Trash2 size={16} />
                          </button>
