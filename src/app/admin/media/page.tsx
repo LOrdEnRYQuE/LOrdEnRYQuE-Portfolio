@@ -18,7 +18,7 @@ import {
 import { motion } from "framer-motion";
 
 interface Asset {
-  id: string;
+  _id: string;
   title: string;
   type: string;
   ext: string;
@@ -43,9 +43,9 @@ export default function MediaVaultPage() {
       const res = await fetch("/api/admin/media");
       if (res.ok) {
         const data = await res.json();
-        setAssets(data.map((a: { id: string; title: string; url: string; type: "IMAGE" | "DOCUMENT" | "DATA"; size: string; ext: string; createdAt: string }) => ({
+        setAssets(data.map((a: { _id: string; title: string; url: string; type: "IMAGE" | "DOCUMENT" | "DATA"; size: string; ext: string; _creationTime: number }) => ({
           ...a,
-          date: new Date(a.createdAt).toLocaleDateString()
+          date: new Date(a._creationTime).toLocaleDateString()
         })));
       }
     } catch (e) {
@@ -86,7 +86,7 @@ export default function MediaVaultPage() {
         method: "DELETE",
       });
       if (res.ok) {
-        setAssets(prev => prev.filter(a => a.id !== id));
+        setAssets(prev => prev.filter(a => a._id !== id));
       }
     } catch (e) {
       console.error("Delete failed", e);
@@ -191,7 +191,7 @@ export default function MediaVaultPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
           {filteredAssets.map((asset, i) => (
             <motion.div
-              key={asset.id}
+              key={asset._id}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: i * 0.05 }}
@@ -223,7 +223,7 @@ export default function MediaVaultPage() {
                     </a>
                     <div className="w-px h-4 bg-white/10" />
                     <button 
-                      onClick={() => handleDelete(asset.id)}
+                      onClick={() => handleDelete(asset._id)}
                       className="flex-1 p-2 rounded-xl hover:bg-red-500/10 text-white/40 hover:text-red-400 transition-all"
                     >
                        <Trash2 size={14} className="mx-auto" />
@@ -237,7 +237,7 @@ export default function MediaVaultPage() {
         <div className="space-y-2">
            {filteredAssets.map((asset, i) => (
              <motion.div
-               key={asset.id}
+               key={asset._id}
                initial={{ opacity: 0, x: -20 }}
                animate={{ opacity: 1, x: 0 }}
                transition={{ delay: i * 0.05 }}
@@ -261,7 +261,7 @@ export default function MediaVaultPage() {
                       <Download size={14} />
                    </a>
                    <button 
-                    onClick={() => handleDelete(asset.id)}
+                    onClick={() => handleDelete(asset._id)}
                     className="p-2 rounded-xl hover:bg-red-500/10 text-white/40 hover:text-red-400 transition-all"
                    >
                       <Trash2 size={14} />

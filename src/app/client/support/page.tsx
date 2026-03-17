@@ -7,10 +7,10 @@ import { motion } from "framer-motion";
 import { siteConfig } from "@/content/site";
 
 interface Message {
-  id: string;
+  _id: string;
   role: 'admin' | 'user';
   content: string;
-  createdAt: string;
+  _creationTime: number;
 }
 
 export default function SupportPage() {
@@ -66,8 +66,8 @@ export default function SupportPage() {
     }
   };
 
-  const formatTime = (dateString: string) => {
-    return new Date(dateString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const formatTime = (timestamp: number) => {
+    return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
   return (
@@ -117,7 +117,7 @@ export default function SupportPage() {
             ) : (
               messages.map((msg) => (
                 <motion.div 
-                  key={msg.id}
+                  key={msg._id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   className={`flex gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
@@ -133,7 +133,7 @@ export default function SupportPage() {
                       : 'bg-accent text-background font-medium'
                   }`}>
                     <p className="text-sm leading-relaxed">{msg.content}</p>
-                    <p className={`text-[10px] mt-2 ${msg.role === 'admin' ? 'text-gray-600' : 'text-background/60'}`}>{formatTime(msg.createdAt)}</p>
+                    <p className={`text-[10px] mt-2 ${msg.role === 'admin' ? 'text-gray-600' : 'text-background/60'}`}>{formatTime(msg._creationTime)}</p>
                   </div>
                 </motion.div>
               ))

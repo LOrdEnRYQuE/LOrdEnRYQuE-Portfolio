@@ -3,16 +3,15 @@ import { useI18n } from "@/lib/i18n";
 import BlogCard from "./BlogCard";
 
 interface Post {
-  id: string;
+  _id: string;
+  _creationTime: number;
   title: string;
   slug: string;
-  excerpt: string | null;
+  excerpt?: string;
   content: string;
   published: boolean;
-  createdAt: Date;
-  updatedAt: Date;
   tags: string;
-  image: string | null;
+  image?: string;
 }
 
 interface BlogListingProps {
@@ -28,7 +27,7 @@ export default function BlogListing({ posts }: BlogListingProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {posts.length > 0 ? (
             posts.map((post, index) => (
-              <BlogCard key={post.id} post={post} index={index} />
+              <BlogCard key={post._id} post={post} index={index} />
             ))
           ) : (
             <div className="col-span-full py-20 text-center">

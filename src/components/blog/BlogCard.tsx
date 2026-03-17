@@ -8,20 +8,20 @@ import { useI18n } from "@/lib/i18n";
 
 interface BlogCardProps {
   post: {
-    id: string;
+    _id: string;
     title: string;
     slug: string;
-    excerpt: string | null;
-    createdAt: Date;
+    excerpt?: string;
+    _creationTime: number;
     tags: string;
-    image: string | null;
+    image?: string;
   };
   index: number;
 }
 
 export default function BlogCard({ post, index }: BlogCardProps) {
   const { t } = useI18n();
-  const tags = JSON.parse(post.tags) as string[];
+  const tags = post.tags ? (JSON.parse(post.tags) as string[]) : [];
 
   return (
     <motion.div
@@ -42,7 +42,7 @@ export default function BlogCard({ post, index }: BlogCardProps) {
             <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-foreground/50 mb-6">
               <div className="flex items-center gap-1.5">
                 <Calendar className="w-3.5 h-3.5" />
-                <span>{format(new Date(post.createdAt), "MMM d, yyyy")}</span>
+                <span>{format(new Date(post._creationTime), "MMM d, yyyy")}</span>
               </div>
               {tags.length > 0 && (
                 <div className="flex items-center gap-1.5">
