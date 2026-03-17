@@ -1,8 +1,4 @@
 name = "portfolio"
-main = ".next/standalone/server.js"
+main = ".vercel/output/static/_worker.js"
 compatibility_date = "2025-02-01"
 compatibility_flags = ["nodejs_compat"]
-
-[assets]
-directory = ".next/static"
-binding = "ASSETS"
