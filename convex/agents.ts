@@ -29,6 +29,13 @@ export const listAll = query({
   },
 });
 
+export const listAllGlobal = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db.query("agents").collect();
+  },
+});
+
 export const listWithStats = query({
   args: { userId: v.id("users") },
   handler: async (ctx, args) => {

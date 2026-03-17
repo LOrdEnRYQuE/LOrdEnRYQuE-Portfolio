@@ -21,7 +21,7 @@ export async function GET(request: Request) {
 
   try {
     const [agents, projects, assets, leads] = await Promise.all([
-      convex.query(api.agents.listAll),
+      convex.query(api.agents.listAllGlobal),
       convex.query(api.internalProjects.listAll),
       convex.query(api.assets.listAll),
       convex.query(api.leads.listAll),
