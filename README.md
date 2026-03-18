@@ -2,16 +2,18 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+This project uses Convex for the backend. Make sure to start both the Convex dev server and Next.js:
 
 ```bash
-pnpm dev
-# or
+# Option 1: Start both servers concurrently
+npm run dev:full
+
+# Option 2: Start manually in separate terminals
+# Terminal 1: Start Convex
+npx convex dev
+
+# Terminal 2: Start Next.js
 npm run dev
-# or
-yarn dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
