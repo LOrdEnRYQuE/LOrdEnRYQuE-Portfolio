@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && npx @cloudflare/next-on-pages",
+    "dev:full": "concurrently \"npx convex dev\" \"npm run dev\"",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint"
   },
@@ -27,12 +28,12 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@cloudflare/next-on-pages": "^1.13.7",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
+    "concurrently": "^8.2.2",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
