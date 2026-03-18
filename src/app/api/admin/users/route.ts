@@ -7,7 +7,7 @@ import { Id } from "@convex/_generated/dataModel";
 // Convex Migration - Ported from Prisma
 import bcrypt from "bcryptjs";
 
-const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL || process.env.CONVEX_URL || "https://jovial-ibex-866.eu-west-1.convex.cloud");
 
 export async function GET() {
   const session = await getServerSession(authOptions);

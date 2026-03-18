@@ -6,7 +6,7 @@ import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
 import bcrypt from "bcryptjs";
 
-const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL || process.env.CONVEX_URL || "https://jovial-ibex-866.eu-west-1.convex.cloud");
 
 export async function PATCH(req: Request) {
   const session = await getServerSession(authOptions);

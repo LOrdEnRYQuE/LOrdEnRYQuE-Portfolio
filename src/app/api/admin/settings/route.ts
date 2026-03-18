@@ -4,7 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@convex/_generated/api";
 
-const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL || process.env.CONVEX_URL || "https://jovial-ibex-866.eu-west-1.convex.cloud");
 
 // GET /api/admin/settings - Get all global settings
 export async function GET() {

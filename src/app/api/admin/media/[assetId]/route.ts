@@ -7,7 +7,7 @@ import { Id } from "@convex/_generated/dataModel";
 import { unlink } from "fs/promises";
 import { join } from "path";
 
-const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL || process.env.CONVEX_URL || "https://jovial-ibex-866.eu-west-1.convex.cloud");
 
 export async function DELETE(
   req: Request,

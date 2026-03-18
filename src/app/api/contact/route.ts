@@ -4,7 +4,7 @@ import { siteConfig } from "@/content/site";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@convex/_generated/api";
 
-const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL || process.env.CONVEX_URL || "https://jovial-ibex-866.eu-west-1.convex.cloud");
 
 // Initialize Resend
 const resend = new Resend(process.env.RESEND_API_KEY || "re_dummy_key_for_builds");
