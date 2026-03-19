@@ -22,17 +22,19 @@ export default function NewInvoicePage() {
   const [saving, setSaving] = useState(false);
 
   // Pre-fill logic
-  const initialData = lead ? {
-    userId: userIdFromUrl || "",
+  const initialData: Partial<WizardData> | undefined = lead ? {
+    userId: (userIdFromUrl ?? "") as Id<"users"> | "",
     projectName: lead.concept || "",
     client: {
       name: lead.name || "",
+      company: "",
+      address: "",
       contact: lead.email || "",
     },
     features: {
       core: (() => {
         try {
-          return JSON.parse(lead.features || "[]");
+          return JSON.parse(lead.features || "[]") as string[];
         } catch { return []; }
       })(),
       services: [],
