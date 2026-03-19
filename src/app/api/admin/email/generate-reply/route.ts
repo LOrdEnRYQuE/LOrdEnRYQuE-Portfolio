@@ -31,7 +31,11 @@ export async function POST(req: Request) {
 
     return Response.json({ text });
   } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
     console.error("[EMAIL_GEN_API]", error);
-    return new Response("Internal Server Error", { status: 500 });
+    return Response.json({ 
+      error: "AI Generation failed", 
+      details: message
+    }, { status: 500 });
   }
 }

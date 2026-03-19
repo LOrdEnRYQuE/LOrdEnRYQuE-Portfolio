@@ -1,3 +1,6 @@
+import { v } from "convex/values";
+import { query, mutation } from "./_generated/server";
+
 /**
  * List emails by folder (INBOX, SENT, DRAFTS, SPAM, TRASH)
  * Supports virtual "STARRED" folder
@@ -66,6 +69,7 @@ export const create = mutation({
     threadId: v.optional(v.string()),
     metadata: v.optional(v.string()),
     tags: v.optional(v.array(v.string())),
+    attachments: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
     return await ctx.db.insert("emails", {
@@ -80,6 +84,7 @@ export const create = mutation({
       threadId: args.threadId || Math.random().toString(36).substring(7),
       metadata: args.metadata,
       tags: args.tags || [],
+      attachments: args.attachments || [],
       isStarred: false,
     });
   },
@@ -181,5 +186,21 @@ export const getCounts = query({
     counts["STARRED"] = starred.length;
     
     return counts;
+  },
+});
+/**
+ * Generate a URL for file uploads to Convex storage
+ */
+export const generateUploadUrl = mutation(async (ctx) => {
+  return await ctx.storage.generateUploadUrl();
+});
+
+/**
+ * Get the public URL for a storage ID
+ */
+export const getUrl = mutation({
+  args: { storageId: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.storage.getUrl(args.storageId);
   },
 });

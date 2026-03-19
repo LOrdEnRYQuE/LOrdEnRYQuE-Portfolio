@@ -204,6 +204,7 @@ export default defineSchema({
     threadId: v.optional(v.string()),
     isStarred: v.optional(v.boolean()),
     tags: v.optional(v.array(v.string())),
+    attachments: v.optional(v.array(v.string())),
     metadata: v.optional(v.string()), // JSON string for lead data or reply info
   }).index("by_user", ["userId"]).index("by_folder", ["folder"]).index("by_status", ["status"]).index("by_thread", ["threadId"]),
 });

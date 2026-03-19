@@ -1,9 +1,10 @@
 "use client";
 
+import * as React from "react";
 import { useState, useEffect } from "react";
 import { useMutation } from "convex/react";
 import { api } from "@convex/_generated/api";
-import { X, Send, Paperclip, Smile, Sparkles, Wand2, Eye, EyeOff, Loader2 } from "lucide-react";
+import { X, Send, Paperclip, Smile, Wand2, Eye, EyeOff, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface EmailComposerProps {
@@ -22,10 +23,27 @@ export default function EmailComposer({ isOpen, onClose, replyTo }: EmailCompose
   const [body, setBody] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [attachments, setAttachments] = useState<string[]>([]);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [showPreview, setShowPreview] = useState(false);
   const [isSaved, setIsSaved] = useState(true);
 
   const createEmail = useMutation(api.emails.create);
+  const generateUploadUrl = useMutation(api.emails.generateUploadUrl);
+
+  // Auto-fill form when replyTo changes or modal opens
+  useEffect(() => {
+    if (isOpen && replyTo) {
+      setTo(replyTo.to);
+      setSubject(replyTo.subject.startsWith("Re:") ? replyTo.subject : `Re: ${replyTo.subject}`);
+      setBody(replyTo.body);
+    } else if (isOpen && !replyTo) {
+      // Keep existing draft or clear? Clear for brand new compose.
+      // But if user was already typing, we shouldn't wipe it.
+      // Only clear if it was empty before.
+    }
+  }, [replyTo, isOpen]);
 
   // Auto-save draft animation simulation
   useEffect(() => {
@@ -35,6 +53,35 @@ export default function EmailComposer({ isOpen, onClose, replyTo }: EmailCompose
       return () => clearTimeout(timer);
     }
   }, [body, subject, to]);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setIsUploading(true);
+    try {
+      const fileList = Array.from(files);
+      for (const file of fileList) {
+        const postUrl = await generateUploadUrl();
+        const result = await fetch(postUrl, {
+          method: "POST",
+          headers: { "Content-Type": file.type },
+          body: file,
+        });
+        const { storageId } = await result.json();
+        setAttachments(prev => [...prev, storageId]);
+      }
+    } catch (error) {
+      console.error("Upload failed:", error);
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
+  const removeAttachment = (id: string) => {
+    setAttachments(prev => prev.filter(a => a !== id));
+  };
 
   const handleGenerateAI = async () => {
     if (!replyTo && !body) return;
@@ -71,6 +118,7 @@ export default function EmailComposer({ isOpen, onClose, replyTo }: EmailCompose
         to,
         subject,
         body: body.includes('<') ? body : body.replace(/\n/g, '<br/>'),
+        attachments,
         folder: "SENT",
         status: "READ",
       });
@@ -78,6 +126,7 @@ export default function EmailComposer({ isOpen, onClose, replyTo }: EmailCompose
       setTo("");
       setSubject("");
       setBody("");
+      setAttachments([]);
     } catch (error) {
       console.error("Failed to send email:", error);
     } finally {
@@ -162,16 +211,25 @@ export default function EmailComposer({ isOpen, onClose, replyTo }: EmailCompose
                 />
               )}
               
-              {/* AI Hover Button */}
-              <button 
-                onClick={handleGenerateAI}
-                disabled={isGenerating}
-                className="absolute right-4 bottom-4 p-3 rounded-full bg-accent-blue text-white shadow-xl hover:scale-110 active:scale-95 transition-all opacity-0 group-hover:opacity-100 disabled:opacity-50 disabled:cursor-not-allowed group/ai"
-                title="AI Magic"
-              >
-                {isGenerating ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} className="group-hover/ai:animate-pulse" />}
-              </button>
             </div>
+
+            {/* Attachments List */}
+            {attachments.length > 0 && (
+              <div className="flex flex-wrap gap-2 pt-2">
+                {attachments.map((id) => (
+                  <div key={id} className="flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/5 rounded-lg group animate-in fade-in slide-in-from-bottom-2">
+                    <Paperclip size={10} className="text-accent-blue" />
+                    <span className="text-[10px] text-white/50 font-mono truncate max-w-[100px]">{id.slice(0, 8)}...</span>
+                    <button 
+                      onClick={() => removeAttachment(id)}
+                      className="p-1 hover:bg-white/10 rounded text-white/20 hover:text-red-400 transition-colors"
+                    >
+                      <X size={10} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Footer Actions */}
@@ -180,14 +238,33 @@ export default function EmailComposer({ isOpen, onClose, replyTo }: EmailCompose
               <button 
                 onClick={handleGenerateAI}
                 disabled={isGenerating}
-                className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[11px] font-bold text-white/40 hover:text-white hover:bg-white/10 transition-all flex items-center gap-2"
+                className={`px-3 py-1.5 rounded-lg border text-[11px] font-bold transition-all flex items-center gap-2 ${
+                  isGenerating 
+                    ? "bg-accent-blue/15 border-accent-blue/30 text-accent-blue animate-pulse" 
+                    : "bg-white/5 border-white/10 text-white/40 hover:text-white hover:bg-white/10"
+                }`}
               >
                 {isGenerating ? <Loader2 size={12} className="animate-spin" /> : <Wand2 size={12} />}
-                Auto-Draft
+                {isGenerating ? "Magic Drafting..." : "AI Auto-Draft"}
               </button>
               <div className="w-px h-4 bg-white/10 mx-1" />
-              <button className="p-2 text-white/30 hover:text-white hover:bg-white/5 rounded-lg transition-all">
-                <Paperclip size={18} />
+              <input 
+                type="file" 
+                multiple
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                className="hidden"
+              />
+              <button 
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isUploading}
+                className={`p-2 rounded-lg transition-all ${
+                  isUploading 
+                    ? "bg-accent-blue/10 text-accent-blue animate-pulse" 
+                    : "text-white/30 hover:text-white hover:bg-white/5"
+                }`}
+              >
+                {isUploading ? <Loader2 size={18} className="animate-spin" /> : <Paperclip size={18} />}
               </button>
               <button className="p-2 text-white/30 hover:text-white hover:bg-white/5 rounded-lg transition-all">
                 <Smile size={18} />

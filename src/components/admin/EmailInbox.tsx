@@ -34,7 +34,11 @@ const FOLDERS = [
   { id: "TRASH", label: "Trash", icon: Trash2 },
 ];
 
-export default function EmailInbox() {
+interface EmailInboxProps {
+  isFullWide?: boolean;
+}
+
+export default function EmailInbox({ isFullWide }: EmailInboxProps) {
   const [activeFolder, setActiveFolder] = useState("INBOX");
   const [selectedEmailId, setSelectedEmailId] = useState<Id<"emails"> | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -42,8 +46,8 @@ export default function EmailInbox() {
   const [replyTo, setReplyTo] = useState<{ to: string; subject: string; body: string } | undefined>(undefined);
   const [filterType, setFilterType] = useState<"all" | "unread" | "starred">("all");
 
-  const emailsResult = useQuery(api.emails.listByFolder, { folder: activeFolder }) || [];
-  const emails = useMemo(() => emailsResult, [emailsResult]);
+  const emailsResult = useQuery(api.emails.listByFolder, { folder: activeFolder });
+  const emails = useMemo(() => emailsResult || [], [emailsResult]);
   const unreadCounts = useQuery(api.emails.getCounts) || {};
   
   const updateStatus = useMutation(api.emails.updateStatus);
@@ -88,7 +92,7 @@ export default function EmailInbox() {
   }, [emails, searchQuery, filterType]);
 
   return (
-    <div className="flex h-[calc(100vh-140px)] bg-[#050505]/80 rounded-[2.5rem] border border-white/5 overflow-hidden backdrop-blur-3xl shadow-2xl relative">
+    <div className={`flex w-full ${isFullWide ? "h-[calc(100vh-108px)] rounded-none border-0" : "h-[calc(100vh-140px)] rounded-[2.5rem] border border-white/5"} bg-[#050505]/80 overflow-hidden backdrop-blur-3xl shadow-2xl relative`}>
       {/* Background Glow */}
       <div className="absolute -top-24 -left-24 w-96 h-96 bg-accent-blue/10 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-purple-500/10 blur-[120px] rounded-full pointer-events-none" />
@@ -205,10 +209,10 @@ export default function EmailInbox() {
             </div>
           ) : (
             filteredEmails.map((email: Doc<"emails">) => (
-              <button
+              <div
                 key={email._id}
                 onClick={() => handleSelectEmail(email)}
-                className={`w-full p-5 text-left rounded-3xl transition-all relative overflow-hidden border ${
+                className={`w-full p-5 text-left rounded-3xl transition-all relative overflow-hidden border cursor-pointer ${
                   selectedEmailId === email._id 
                     ? "bg-white/5 border-white/10 shadow-2xl" 
                     : "bg-transparent border-transparent hover:bg-white/2 hover:border-white/5"
@@ -251,7 +255,7 @@ export default function EmailInbox() {
                     <Star size={14} fill={email.isStarred ? "currentColor" : "none"} />
                   </button>
                 </div>
-              </button>
+              </div>
             ))
           )}
         </div>
