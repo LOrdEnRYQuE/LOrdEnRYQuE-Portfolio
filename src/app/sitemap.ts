@@ -3,6 +3,8 @@ import { fetchQuery } from "convex/nextjs";
 import { api } from "@convex/_generated/api";
 import { siteConfig } from "@/content/site";
 
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = siteConfig.domain;
 
@@ -21,8 +23,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: route === "" ? 1 : 0.8,
   }));
 
-  // Dynamic Pages
-  const allPages = await fetchQuery(api.pages.listAll);
+  try {
+    // Dynamic Pages
+    const allPages = await fetchQuery(api.pages.listAll);
   const pages = allPages.filter((page) => page.published);
 
   const pageRoutes = pages.map((page) => ({
@@ -52,5 +55,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  return [...staticRoutes, ...pageRoutes, ...postRoutes, ...projectRoutes];
+    return [...staticRoutes, ...pageRoutes, ...projectRoutes, ...postRoutes];
+  } catch (error) {
+    console.error("Sitemap generation error:", error);
+    return staticRoutes;
+  }
 }

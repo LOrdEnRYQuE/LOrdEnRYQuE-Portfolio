@@ -1,6 +1,8 @@
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@convex/_generated/api";
 import { notFound } from "next/navigation";
+
+export const dynamic = "force-dynamic";
 import { format } from "date-fns";
 import { Calendar, Tag, ArrowLeft, Share2 } from "lucide-react";
 import Link from "next/link";
