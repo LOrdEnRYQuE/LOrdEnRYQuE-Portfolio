@@ -7,7 +7,8 @@ export interface ContractData {
   language?: string;
   signatureData?: string;
   clientName?: string;
-  signedAt?: number;
+  signedAt?: number | string;
+  [key: string]: unknown;
 }
 
 /**
