@@ -12,7 +12,15 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'utfs.io', // Added common upload domain for future use
+        hostname: 'utfs.io',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.convex.cloud',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.convex.site',
       },
     ],
   },
