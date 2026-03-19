@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
+import { api } from "../../../../../convex/_generated/api";
 import { ArrowLeft, Receipt } from "lucide-react";
 import type { Id } from "../../../../../convex/_generated/dataModel";
 import { useRouter, useSearchParams } from "next/navigation";
