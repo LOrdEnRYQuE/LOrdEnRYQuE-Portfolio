@@ -10,4 +10,4 @@ export const config = {
   matcher: ["/client/:path*"],
 };
 
-export const runtime = "edge";
+export const runtime = "experimental-edge";
