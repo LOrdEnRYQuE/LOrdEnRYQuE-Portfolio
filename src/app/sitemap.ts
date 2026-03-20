@@ -49,7 +49,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // 3. Portfolio Projects
     const projects = await fetchQuery(api.portfolio.listAll);
     const projectRoutes = projects
-      .filter((project) => project.published !== false && project.isIndexed !== false)
+      .filter((project) => project.isIndexed !== false)
       .map((project) => ({
         url: `${baseUrl}/projects/${project.slug}`,
         lastModified: new Date(project._creationTime),
