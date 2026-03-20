@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "dev:full": "concurrently \"npx convex dev\" \"npm run dev\"",
-    "build": "next build",
+    "build": "npx @opennextjs/cloudflare build",
     "start": "next start",
     "lint": "eslint"
   },
