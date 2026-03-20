@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "dev:full": "concurrently \"npx convex dev\" \"npm run dev\"",
-    "prebuild": "npm install --no-save wrangler @opennextjs/cloudflare",
-    "build": "npx @opennextjs/cloudflare build",
+    "build": "next build",
+    "build:worker": "npm install --no-save wrangler @opennextjs/cloudflare && npx @opennextjs/cloudflare build",
     "start": "next start",
     "lint": "eslint"
   },
