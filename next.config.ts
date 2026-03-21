@@ -4,7 +4,11 @@ const nextConfig: NextConfig = {
   /* config options here */
   output: "standalone",
   serverExternalPackages: ["jspdf", "pdf-parse", "@ai-sdk/google", "@napi-rs/canvas", "@img/sharp-libvips-dev", "@img/sharp-libvips-darwin-x64"],
-  reactCompiler: true,
+  experimental: {
+    // @ts-ignore
+    optimizePackageImports: ["lucide-react", "date-fns"],
+    reactCompiler: true,
+  },
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
