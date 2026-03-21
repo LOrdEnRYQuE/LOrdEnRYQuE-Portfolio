@@ -1,4 +1,4 @@
-import { jsPDF } from "jspdf";
+// import moved for bundle optimization
 
 export interface ContractData {
   title: string;
@@ -16,6 +16,7 @@ export interface ContractData {
  * @param contract The contract data from Convex
  */
 export async function downloadContractPDF(contract: ContractData) {
+  const { jsPDF } = await import("jspdf");
   const doc = new jsPDF({
     orientation: "portrait",
     unit: "mm",

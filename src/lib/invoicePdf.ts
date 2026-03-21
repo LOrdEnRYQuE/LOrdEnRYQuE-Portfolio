@@ -1,4 +1,4 @@
-import { jsPDF } from "jspdf";
+// import moved to avoid bundle bloat
 
 export interface WizardData {
   projectName: string;
@@ -62,6 +62,7 @@ export interface InvoiceData {
  */
 export async function downloadDeveloperInvoicePDF(invoice: InvoiceData) {
   const data: WizardData = invoice.details ? JSON.parse(invoice.details) : null;
+  const { jsPDF } = await import("jspdf");
   
   const doc = new jsPDF({
     orientation: "portrait",

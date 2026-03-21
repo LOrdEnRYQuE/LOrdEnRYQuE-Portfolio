@@ -4,7 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { convex } from "@/lib/convex";
 import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
-import { PDFParse } from "pdf-parse";
+// removed static import for pdf-parse to reduce bundle size
 
 
 export async function GET(
@@ -73,6 +73,7 @@ export async function POST(
     let extractedContent = "";
 
     if (file.name.endsWith(".pdf")) {
+      const { PDFParse } = await import("pdf-parse");
       const parser = new PDFParse({ data: buffer });
       const result = await parser.getText();
       extractedContent = result.text;
