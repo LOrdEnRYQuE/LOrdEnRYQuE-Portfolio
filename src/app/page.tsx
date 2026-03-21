@@ -1,7 +1,7 @@
 import Hero from "@/components/sections/Hero";
 import About from "@/components/sections/About";
 import Services from "@/components/sections/Services";
-import FeaturedProjects from "@/components/sections/FeaturedProjects";
+import FeaturedProjects, { type PortfolioProject } from "@/components/sections/FeaturedProjects";
 import ContactCta from "@/components/sections/ContactCta";
 
 import { constructMetadata } from "@/lib/seo";
@@ -24,7 +24,7 @@ export default async function HomePage() {
       <Hero />
       <About />
       <Services />
-      <FeaturedProjects initialData={featuredProjects as any} />
+      <FeaturedProjects initialData={featuredProjects as PortfolioProject[]} />
       <ContactCta />
     </>
   );

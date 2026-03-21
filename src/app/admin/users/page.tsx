@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import type { Id } from "../../../../convex/_generated/dataModel";
+import type { Doc, Id } from "../../../../convex/_generated/dataModel";
 import DataTable from "@/components/dashboard/DataTable";
 import StatusBadge from "@/components/dashboard/StatusBadge";
 
@@ -22,17 +22,17 @@ export default function AdminUsersPage() {
   };
 
   const columns = [
-    { key: "name", label: "Name", render: (item: Record<string, unknown>) => (
-      <span className="font-medium text-white">{String(item.name || "—")}</span>
+    { key: "name", label: "Name", render: (item: Doc<"users">) => (
+      <span className="font-medium text-white">{item.name || "—"}</span>
     )},
     { key: "email", label: "Email" },
     {
       key: "role",
       label: "Role",
-      render: (item: Record<string, unknown>) => (
+      render: (item: Doc<"users">) => (
         <select
-          value={String(item.role)}
-          onChange={(e) => handleRoleChange(item._id as Id<"users">, e.target.value)}
+          value={item.role}
+          onChange={(e) => handleRoleChange(item._id, e.target.value)}
           className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white outline-none cursor-pointer"
         >
           <option value="USER">USER</option>
@@ -44,9 +44,9 @@ export default function AdminUsersPage() {
     {
       key: "actions",
       label: "",
-      render: (item: Record<string, unknown>) => (
+      render: (item: Doc<"users">) => (
         <button
-          onClick={(e) => { e.stopPropagation(); handleDelete(item._id as Id<"users">); }}
+          onClick={(e) => { e.stopPropagation(); handleDelete(item._id); }}
           className="text-[10px] font-bold text-red-400/50 hover:text-red-400 uppercase tracking-widest transition-colors"
         >
           Delete
@@ -75,7 +75,7 @@ export default function AdminUsersPage() {
 
       <DataTable
         columns={columns}
-        data={users as unknown as Record<string, unknown>[]}
+        data={users as Doc<"users">[]}
         searchKey="email"
         emptyMessage="No users found"
       />

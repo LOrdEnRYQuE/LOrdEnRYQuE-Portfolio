@@ -12,7 +12,7 @@ import { api } from "@convex/_generated/api";
 
 import Image from "next/image";
 
-interface PortfolioProject {
+export interface PortfolioProject {
   _id: string;
   slug: string;
   title: string;
@@ -24,6 +24,15 @@ interface PortfolioProject {
   _creationTime: number;
   liveUrl?: string;
   githubUrl?: string;
+  description?: string;
+  imageAlt?: string;
+  seoTitle?: string;
+  metaDescription?: string;
+  canonicalUrl?: string;
+  ogImage?: string;
+  isIndexed?: boolean;
+  schemaType?: string;
+  faqItems?: string;
 }
 
 interface FeaturedProjectsProps {

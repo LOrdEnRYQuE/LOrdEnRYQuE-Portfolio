@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Bell, Check, X, Info, AlertTriangle, CheckCircle, Zap } from "lucide-react";
+import { GenericId } from "convex/values";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
 
@@ -13,8 +14,10 @@ export default function NotificationBell() {
   
   // We need the internal user ID for the query
   const user = useQuery(api.users.getUserByEmail, { email: session?.user?.email || "" });
-  const unreadCount = useQuery(api.notifications.getUnreadCount, { userId: user?._id as any }) || 0;
-  const notifications = useQuery(api.notifications.listAll, { userId: user?._id as any }) || [];
+  const userId = user?._id as GenericId<"users"> | undefined;
+
+  const unreadCount = useQuery(api.notifications.getUnreadCount, userId ? { userId } : "skip") || 0;
+  const notifications = useQuery(api.notifications.listAll, userId ? { userId } : "skip") || [];
   
   const markAsRead = useMutation(api.notifications.markAsRead);
   const markAllAsRead = useMutation(api.notifications.markAllAsRead);
@@ -54,7 +57,7 @@ export default function NotificationBell() {
                 <h3 className="text-[10px] font-black text-white/40 uppercase tracking-widest">Platform Alerts</h3>
                 {unreadCount > 0 && (
                   <button 
-                    onClick={() => markAllAsRead({ userId: user?._id as any })}
+                    onClick={() => userId && markAllAsRead({ userId })}
                     className="text-[9px] font-bold text-accent-blue hover:text-white transition-colors uppercase tracking-widest"
                   >
                     Clear All

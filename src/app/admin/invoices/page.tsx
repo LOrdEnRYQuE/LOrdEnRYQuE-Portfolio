@@ -6,6 +6,11 @@ import DataTable from "@/components/dashboard/DataTable";
 import StatusBadge from "@/components/dashboard/StatusBadge";
 import Link from "next/link";
 import { Plus, Receipt, DollarSign, Clock, CheckCircle2 } from "lucide-react";
+import type { Doc } from "../../../../convex/_generated/dataModel";
+
+type InvoiceWithUser = Doc<"invoices"> & {
+  user: { name: string; email: string } | null;
+};
 
 export default function AdminInvoicesPage() {
   const invoices = useQuery(api.invoices.listAll);
@@ -14,50 +19,47 @@ export default function AdminInvoicesPage() {
     {
       key: "number",
       label: "Invoice #",
-      render: (item: Record<string, unknown>) => (
-        <span className="font-mono font-bold text-white">{String(item.number)}</span>
+      render: (item: InvoiceWithUser) => (
+        <span className="font-mono font-bold text-white">{item.number}</span>
       ),
     },
     {
       key: "user",
       label: "Client",
-      render: (item: Record<string, unknown>) => {
-        const user = item.user as { name?: string; email?: string } | undefined;
-        return (
-          <div className="flex flex-col">
-            <span className="text-sm text-white/70">{user?.name || "Unknown"}</span>
-            <span className="text-[10px] text-white/30 font-mono">{user?.email}</span>
-          </div>
-        );
-      },
+      render: (item: InvoiceWithUser) => (
+        <div className="flex flex-col">
+          <span className="text-sm text-white/70">{item.user?.name || "Unknown"}</span>
+          <span className="text-[10px] text-white/30 font-mono">{item.user?.email}</span>
+        </div>
+      ),
     },
     {
       key: "amount",
       label: "Amount",
-      render: (item: Record<string, unknown>) => (
+      render: (item: InvoiceWithUser) => (
         <span className="font-bold text-white">
-          {String(item.currency)} {Number(item.amount).toLocaleString()}
+          {item.currency} {item.amount.toLocaleString()}
         </span>
       ),
     },
     {
       key: "dueDate",
       label: "Due Date",
-      render: (item: Record<string, unknown>) => (
-        <span className="text-xs text-white/50">{String(item.dueDate)}</span>
+      render: (item: InvoiceWithUser) => (
+        <span className="text-xs text-white/50">{item.dueDate}</span>
       ),
     },
     {
       key: "status",
       label: "Status",
-      render: (item: Record<string, unknown>) => <StatusBadge status={String(item.status)} />,
+      render: (item: InvoiceWithUser) => <StatusBadge status={item.status} />,
     },
     {
       key: "actions",
       label: "",
-      render: (item: Record<string, unknown>) => (
+      render: (item: InvoiceWithUser) => (
         <Link
-          href={`/admin/invoices/${String(item._id)}`}
+          href={`/admin/invoices/${item._id}`}
           className="text-xs font-medium text-accent-blue hover:text-accent-purple transition-colors"
         >
           View / Edit
@@ -128,7 +130,7 @@ export default function AdminInvoicesPage() {
         </div>
         <DataTable
           columns={columns}
-          data={invoices || []}
+          data={(invoices as InvoiceWithUser[]) || []}
           emptyMessage="No invoices found"
         />
       </div>

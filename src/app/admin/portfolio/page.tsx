@@ -11,6 +11,7 @@ import {
   Settings, Layers, Briefcase, Github, ExternalLink
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { type PortfolioProject } from "@/components/sections/FeaturedProjects";
 
 type Tab = "content" | "seo" | "advanced";
 
@@ -48,18 +49,18 @@ export default function AdminPortfolioPage() {
 
   const [form, setForm] = useState(initialForm);
 
-  const handleEdit = (project: any) => {
-    setEditingId(project._id);
+  const handleEdit = (project: PortfolioProject) => {
+    setEditingId(project._id as Id<"portfolioProjects">);
     let stackStr = "";
     try {
-      if (project.stack && project.stack.startsWith("[")) {
+      if (typeof project.stack === "string" && project.stack.startsWith("[")) {
         const parsedStack = JSON.parse(project.stack);
-        stackStr = Array.isArray(parsedStack) ? parsedStack.join(", ") : project.stack;
+        stackStr = Array.isArray(parsedStack) ? parsedStack.join(", ") : String(project.stack);
       } else {
-        stackStr = project.stack || "";
+        stackStr = String(project.stack || "");
       }
     } catch {
-      stackStr = project.stack || "";
+      stackStr = String(project.stack || "");
     }
 
     setForm({
@@ -132,7 +133,7 @@ export default function AdminPortfolioPage() {
     { 
       key: "title", 
       label: "Project", 
-      render: (item: any) => (
+      render: (item: PortfolioProject) => (
         <div className="flex flex-col">
           <span className="font-medium text-white">{item.title}</span>
           <span className="text-[10px] text-white/30 font-mono ">/projects/{item.slug}</span>
@@ -142,21 +143,21 @@ export default function AdminPortfolioPage() {
     { 
       key: "featured", 
       label: "Featured", 
-      render: (item: any) => <StatusBadge status={item.featured ? "Yes" : "No"} /> 
+      render: (item: PortfolioProject) => <StatusBadge status={item.featured ? "Yes" : "No"} /> 
     },
     { 
       key: "status", 
       label: "Status", 
-      render: (item: any) => <StatusBadge status={item.status} /> 
+      render: (item: PortfolioProject) => <StatusBadge status={item.status} /> 
     },
     {
       key: "actions", 
       label: "",
-      render: (item: any) => (
+      render: (item: PortfolioProject) => (
         <div className="flex items-center gap-3 justify-end opacity-0 group-hover/row:opacity-100 transition-opacity">
           <button onClick={() => handleEdit(item)} className="text-[10px] font-bold text-accent-blue hover:text-white uppercase tracking-widest transition-colors">Edit</button>
           <button 
-            onClick={() => { if (confirm("Remove project?")) removeProject({ id: item._id }); }}
+            onClick={() => { if (confirm("Remove project?")) removeProject({ id: item._id as Id<"portfolioProjects"> }); }}
             className="text-[10px] font-bold text-red-400/50 hover:text-red-400 uppercase tracking-widest transition-colors"
           >
             Delete
@@ -349,7 +350,7 @@ export default function AdminPortfolioPage() {
           </motion.div>
         ) : (
           <div className="relative overflow-hidden rounded-4xl border border-white/5 bg-[#080B10]/80 backdrop-blur-2xl">
-             <DataTable columns={columns} data={projects as any} searchKey="title" emptyMessage="Zero projects in showcase. Begin the legacy." />
+             <DataTable columns={columns} data={projects as unknown as PortfolioProject[]} searchKey="title" emptyMessage="Zero projects in showcase. Begin the legacy." />
           </div>
         )}
       </AnimatePresence>

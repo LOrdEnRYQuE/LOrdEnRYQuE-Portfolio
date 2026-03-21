@@ -71,7 +71,7 @@ export default function NewPostPage() {
             <ArrowLeft size={20} />
           </Link>
           <div>
-            <h1 className="text-2xl font-black text-white  tracking-tighter uppercase italic">Craft <span className="text-accent-purple">Narrative</span></h1>
+            <h1 className="text-2xl font-black text-white uppercase italic">Craft <span className="text-accent-purple">Narrative</span></h1>
             <p className="text-[10px] text-white/30 font-bold uppercase tracking-widest mt-0.5">New Collective Entry</p>
           </div>
         </div>

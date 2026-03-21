@@ -18,7 +18,7 @@ interface DataTableProps<T> {
   emptyMessage?: string;
 }
 
-export default function DataTable<T>({
+export default function DataTable<T extends Record<string, any>>({
   columns,
   data,
   searchKey,
@@ -31,8 +31,7 @@ export default function DataTable<T>({
 
   const filtered = searchKey
     ? data.filter((item) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const val = String((item as any)[searchKey] || "").toLowerCase();
+        const val = String(item[searchKey as keyof T] || "").toLowerCase();
         return val.includes(search.toLowerCase());
       })
     : data;
@@ -85,8 +84,7 @@ export default function DataTable<T>({
                 >
                   {columns.map((col) => (
                     <td key={col.key} className="px-5 py-4 text-sm text-white/70">
-                      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                      {col.render ? col.render(item) : String((item as any)[col.key] ?? "")}
+                      {col.render ? col.render(item) : String(item[col.key as keyof T] ?? "")}
                     </td>
                   ))}
                 </tr>

@@ -8,20 +8,5 @@
   "compatibility_date": "2024-12-01",
   "compatibility_flags": [
     "nodejs_compat"
-  ],
-  "env": {
-    "production": {
-      "vars": {
-        "NEXT_PUBLIC_CONVEX_URL": "REPLACE_WITH_YOUR_PROD_CONVEX_URL",
-        "CONVEX_DEPLOYMENT": "REPLACE_WITH_YOUR_PROD_CONVEX_DEPLOYMENT",
-        "NEXTAUTH_SECRET": "any_secret_key_12345",
-        "NEXTAUTH_URL": "https://your-cloudflare-domain.com",
-        "GA4_PROPERTY_ID": "403131165",
-        "GOOGLE_CLIENT_EMAIL": "portfolio-ga4-analytics@valid-responder-403715.iam.gserviceaccount.com",
-        "GOOGLE_PRIVATE_KEY": "-----BEGIN PRIVATE KEY-----\\nMIIE...\\n-----END PRIVATE KEY-----\\n",
-        "CF_ACCESS_CLIENT_ID": "7877a88019c0ae64bbd12322bb7026b37c4424c5f345941d2bf2e9ecdccd8574",
-        "CF_ACCESS_CLIENT_SECRET": "6ed041a4a79941fe56ef17dec8b997b163c024b76b3cb3f62662e638c3f6dafa"
-      }
-    }
-  }
+  ]
 }

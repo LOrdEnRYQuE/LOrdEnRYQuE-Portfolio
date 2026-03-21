@@ -6,6 +6,31 @@ import { projects as staticProjects } from "@/content/projects";
 import { ProjectDetail } from "@/components/sections/ProjectDetail";
 import { constructMetadata } from "@/lib/seo";
 import { Metadata } from "next";
+import { type PortfolioProject } from "@/components/sections/FeaturedProjects";
+import { type Project as StaticProject } from "@/content/projects";
+
+// Type to bridge Convex and Static projects
+type PageProject = {
+  _id?: any;
+  _creationTime?: number;
+  slug: string;
+  title: string;
+  summary: string;
+  status: string;
+  stack: string | string[];
+  cover: string;
+  featured: boolean;
+  liveUrl?: string;
+  githubUrl?: string;
+  description?: string;
+  brief?: string;
+  challenge?: string;
+  solution?: string;
+  seoTitle?: string;
+  metaDescription?: string;
+  canonicalUrl?: string;
+  ogImage?: string;
+};
 
 export async function generateStaticParams() {
   const projects = await fetchQuery(api.portfolio.listAll);
@@ -29,11 +54,11 @@ export async function generateMetadata({
   const { slug } = await params;
   
   // Try dynamic first
-  let project = await fetchQuery(api.portfolio.getBySlug, { slug });
+  let project: any = await fetchQuery(api.portfolio.getBySlug, { slug });
   
   // Fallback to static
   if (!project) {
-    project = staticProjects.find((p) => p.slug === slug) as any;
+    project = staticProjects.find((p) => p.slug === slug) as unknown as PageProject;
   }
 
   if (!project) return {};
@@ -54,16 +79,16 @@ export default async function ProjectDetailPage({
   const { slug } = await params;
   
   // Try dynamic first
-  let project = await fetchQuery(api.portfolio.getBySlug, { slug });
+  let project: any = await fetchQuery(api.portfolio.getBySlug, { slug });
   
   // Fallback to static
   if (!project) {
-     project = staticProjects.find((p) => p.slug === slug) as any;
+     project = staticProjects.find((p) => p.slug === slug) as unknown as PageProject;
   }
 
   if (!project) {
     return notFound();
   }
 
-  return <ProjectDetail project={project as any} />;
+  return <ProjectDetail project={project as unknown as StaticProject} />;
 }

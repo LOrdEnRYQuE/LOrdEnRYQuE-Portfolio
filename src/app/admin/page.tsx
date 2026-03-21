@@ -15,10 +15,13 @@ import {
   Receipt, Activity, Zap, Globe, Search, 
   ArrowRightLeft, ImageIcon, Heart
 } from "lucide-react";
+import type { Doc } from "../../../convex/_generated/dataModel";
+
+type DashboardStats = NonNullable<ReturnType<typeof useQuery<typeof api.dashboardStats.getStats>>>;
 
 export default function AdminDashboard() {
   const stats = useQuery(api.dashboardStats.getStats);
-  const [selectedLead, setSelectedLead] = useState<any>(null);
+  const [selectedLead, setSelectedLead] = useState<Doc<"leads"> | null>(null);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
 
   if (!stats) {
@@ -38,7 +41,7 @@ export default function AdminDashboard() {
     { 
       key: "name", 
       label: "Origin",
-      render: (item: any) => (
+      render: (item: Doc<"leads">) => (
         <div className="flex flex-col">
           <span className="font-bold text-white uppercase text-xs tracking-tight">{item.name}</span>
           <span className="text-[10px] text-white/20 font-mono italic">{item.email}</span>
@@ -48,7 +51,7 @@ export default function AdminDashboard() {
     { 
       key: "score", 
       label: "Intensity", 
-      render: (item: any) => {
+      render: (item: Doc<"leads"> & { score?: number }) => {
         const score = Number(item.score || 0);
         const color = score > 70 ? "text-emerald-400" : score > 40 ? "text-amber-400" : "text-white/20";
         return (
@@ -59,26 +62,26 @@ export default function AdminDashboard() {
         );
       }
     },
-    { key: "status", label: "State", render: (item: any) => <StatusBadge status={String(item.status)} /> },
+    { key: "status", label: "State", render: (item: Doc<"leads">) => <StatusBadge status={item.status} /> },
   ];
 
   const invoiceColumns = [
     { 
       key: "number", 
       label: "Transaction ID",
-      render: (item: any) => <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest">{item.number}</span>
+      render: (item: Doc<"invoices">) => <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest">{item.number}</span>
     },
     { key: "projectName", label: "Entity" },
     { 
       key: "amount", 
       label: "Volume", 
-      render: (item: any) => (
+      render: (item: Doc<"invoices">) => (
         <span className="font-mono font-black text-white italic">
-          €{Number(item.amount || 0).toLocaleString()}
+          €{item.amount.toLocaleString()}
         </span>
       )
     },
-    { key: "status", label: "Status", render: (item: any) => <StatusBadge status={String(item.status)} /> },
+    { key: "status", label: "Status", render: (item: Doc<"invoices">) => <StatusBadge status={item.status} /> },
   ];
 
   return (
@@ -156,7 +159,7 @@ export default function AdminDashboard() {
               </div>
               <DataTable 
                 columns={leadColumns} 
-                data={stats.recentLeads as unknown as Record<string, unknown>[]} 
+                data={(stats.recentLeads as any[]) || []} 
                 onRowClick={(lead) => { setSelectedLead(lead); setIsPanelOpen(true); }}
                 emptyMessage="Lead sensors clear. No recent entries." 
               />
@@ -173,7 +176,11 @@ export default function AdminDashboard() {
                 </h2>
                 <button className="px-6 py-2 rounded-xl bg-white/2 border border-white/10 text-[9px] font-black text-white/30 hover:text-white uppercase tracking-[0.2em] transition-all italic">Audit Log</button>
               </div>
-              <DataTable columns={invoiceColumns} data={stats.recentInvoices as unknown as Record<string, unknown>[]} emptyMessage="Financial flow registers empty." />
+              <DataTable 
+                columns={invoiceColumns} 
+                data={(stats.recentInvoices as any[]) || []} 
+                emptyMessage="Financial flow registers empty." 
+              />
             </div>
           </div>
         </div>

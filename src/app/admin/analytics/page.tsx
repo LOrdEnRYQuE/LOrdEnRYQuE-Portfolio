@@ -277,7 +277,7 @@ function GA4Dashboard() {
 
        {/* Detailed Chart Placeholder */}
        <div className="p-8 bg-white/5 border border-white/10 rounded-3xl h-[300px] flex flex-col items-center justify-center space-y-2 relative overflow-hidden group">
-           <div className="absolute inset-0 bg-gradient-to-t from-accent-blue/5 to-transparent blur-3xl" />
+           <div className="absolute inset-0 bg-linear-to-t from-accent-blue/5 to-transparent blur-3xl" />
            <LineChart className="w-16 h-16 text-white/10 mb-4" />
            <h3 className="text-white font-bold relative z-10">Live Telemetry Active</h3>
            <p className="text-xs text-white/40 max-w-md text-center relative z-10">Data successfully streaming from Google Analytics Data API v1beta via zero-dependency RS256 token exchange.</p>

@@ -31,6 +31,20 @@ import {
 } from "lucide-react";
 import { SITE_SETTINGS_SCHEMA } from "@/content/settings-schema";
 
+interface Field {
+  key: string;
+  label: string;
+  description: string;
+  placeholder: string;
+}
+
+interface Category {
+  title: string;
+  icon: keyof typeof ICON_MAP;
+  color: string;
+  fields: Field[];
+}
+
 const ICON_MAP = {
   Globe,
   BrainCircuit,
@@ -54,7 +68,7 @@ export default function AdminSettingsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [logs, setLogs] = useState<Array<{ msg: string; type: "info" | "success" | "warn"; id: string }>>([]);
 
-  const categories = Object.entries(SITE_SETTINGS_SCHEMA);
+  const categories = Object.entries(SITE_SETTINGS_SCHEMA) as [string, Category][];
 
   const filteredCategories = useMemo(() => {
     if (!searchQuery) return categories;
@@ -67,7 +81,7 @@ export default function AdminSettingsPage() {
         f.description.toLowerCase().includes(query)
       );
       return [id, { ...cat, fields: filteredFields }];
-    }).filter(([, cat]) => (cat as any).fields.length > 0);
+    }).filter(([, cat]) => (cat as Category).fields.length > 0) as [string, Category][];
   }, [searchQuery, categories]);
 
   const addLog = (msg: string, type: "info" | "success" | "warn" = "info") => {
@@ -163,8 +177,8 @@ export default function AdminSettingsPage() {
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
         {/* Left Column: Categories */}
         <div className="xl:col-span-8 space-y-8">
-          {(filteredCategories as any[]).map(([catId, cat], catIdx) => {
-            const Icon = (ICON_MAP as any)[cat.icon] || Globe;
+          {filteredCategories.map(([catId, cat], catIdx) => {
+            const Icon = ICON_MAP[cat.icon] || Globe;
             return (
               <motion.div
                 key={catId}
@@ -193,7 +207,7 @@ export default function AdminSettingsPage() {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
-                    {cat.fields.map((field: any) => {
+                    {cat.fields.map((field) => {
                       const value = getConfigValue(field.key);
                       const changed = isChanged(field.key);
                       const isSaving = saving === field.key;

@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import type { Id } from "../../../../convex/_generated/dataModel";
+import type { Doc, Id } from "../../../../convex/_generated/dataModel";
 import DataTable from "@/components/dashboard/DataTable";
 import StatusBadge from "@/components/dashboard/StatusBadge";
 import Link from "next/link";
@@ -21,7 +21,7 @@ export default function AdminBlogPage() {
     { 
       key: "title", 
       label: "Article", 
-      render: (item: any) => (
+      render: (item: Doc<"posts">) => (
         <div className="flex flex-col">
           <Link href={`/admin/blog/${item._id}/edit`} className="font-bold text-white hover:text-accent-blue transition-colors tracking-tight">
             {item.title}
@@ -36,7 +36,7 @@ export default function AdminBlogPage() {
     { 
       key: "published", 
       label: "Visibility", 
-      render: (item: any) => (
+      render: (item: Doc<"posts">) => (
         <button onClick={() => handleTogglePublished(item._id, item.published)} className="hover:opacity-80 transition-opacity">
           <StatusBadge status={item.published ? "Published" : "Draft"} />
         </button>
@@ -45,7 +45,7 @@ export default function AdminBlogPage() {
     {
       key: "actions", 
       label: "",
-      render: (item: any) => (
+      render: (item: Doc<"posts">) => (
         <div className="flex items-center gap-4 justify-end opacity-0 group-hover/row:opacity-100 transition-opacity">
           <Link href={`/admin/blog/${item._id}/edit`} className="text-[10px] font-black text-accent-blue hover:text-white uppercase tracking-widest transition-colors">
             Edit
@@ -84,7 +84,7 @@ export default function AdminBlogPage() {
       <div className="relative overflow-hidden rounded-4xl border border-white/5 bg-[#080B10]/80 backdrop-blur-2xl">
         <DataTable
           columns={columns}
-          data={posts as any}
+          data={posts as Doc<"posts">[]}
           searchKey="title"
           emptyMessage="Chronicles are empty. Start writing the story."
         />
