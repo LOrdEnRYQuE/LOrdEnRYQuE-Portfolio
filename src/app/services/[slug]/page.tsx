@@ -10,13 +10,6 @@ import { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
 
-export async function generateStaticParams() {
-  const services = await fetchQuery(api.services.listPublished, {}, { url: CONVEX_URL });
-  return services.map((service) => ({
-    slug: service.slug,
-  }));
-}
-
 export async function generateMetadata({ 
   params 
 }: { 
