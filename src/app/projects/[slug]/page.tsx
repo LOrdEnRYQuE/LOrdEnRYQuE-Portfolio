@@ -2,6 +2,7 @@ import React from "react";
 import { notFound } from "next/navigation";
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@convex/_generated/api";
+import { CONVEX_URL } from "@/lib/convex";
 import { projects as staticProjects } from "@/content/projects";
 import { ProjectDetail } from "@/components/sections/ProjectDetail";
 import { constructMetadata } from "@/lib/seo";
@@ -33,7 +34,7 @@ type PageProject = {
 };
 
 export async function generateStaticParams() {
-  const projects = await fetchQuery(api.portfolio.listAll);
+  const projects = await fetchQuery(api.portfolio.listAll, {}, { url: CONVEX_URL });
   
   // Combine with static ones just in case
   const dynamicSlugs = projects.map((p) => ({ slug: p.slug }));
@@ -54,7 +55,7 @@ export async function generateMetadata({
   const { slug } = await params;
   
   // Try dynamic first
-  let project: any = await fetchQuery(api.portfolio.getBySlug, { slug });
+  let project: any = await fetchQuery(api.portfolio.getBySlug, { slug }, { url: CONVEX_URL });
   
   // Fallback to static
   if (!project) {
@@ -79,7 +80,7 @@ export default async function ProjectDetailPage({
   const { slug } = await params;
   
   // Try dynamic first
-  let project: any = await fetchQuery(api.portfolio.getBySlug, { slug });
+  let project: any = await fetchQuery(api.portfolio.getBySlug, { slug }, { url: CONVEX_URL });
   
   // Fallback to static
   if (!project) {
