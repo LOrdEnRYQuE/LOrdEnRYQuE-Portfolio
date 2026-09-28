@@ -12,13 +12,6 @@ import ReactMarkdown from "react-markdown";
 import { constructMetadata } from "@/lib/seo";
 import { Metadata } from "next";
 
-export async function generateStaticParams() {
-  const posts = await fetchQuery(api.posts.getPublishedPosts, {}, { url: CONVEX_URL });
-  return posts.map((post) => ({
-    slug: post.slug,
-  }));
-}
-
 export async function generateMetadata({ 
   params 
 }: { 
