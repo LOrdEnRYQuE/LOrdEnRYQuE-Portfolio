@@ -1,5 +1,6 @@
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@convex/_generated/api";
+import { CONVEX_URL } from "@/lib/convex";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
@@ -10,7 +11,7 @@ import { Metadata } from "next";
 export const dynamic = "force-dynamic";
 
 export async function generateStaticParams() {
-  const industries = await fetchQuery(api.industries.listPublished);
+  const industries = await fetchQuery(api.industries.listPublished, {}, { url: CONVEX_URL });
   return industries.map((industry) => ({
     slug: industry.slug,
   }));
@@ -22,7 +23,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }> 
 }): Promise<Metadata> {
   const { slug } = await params;
-  const industry = await fetchQuery(api.industries.getBySlug, { slug });
+  const industry = await fetchQuery(api.industries.getBySlug, { slug }, { url: CONVEX_URL });
 
   if (!industry || !industry.published) return {};
 
@@ -42,7 +43,7 @@ interface IndustrySlugPageProps {
 export default async function IndustrySlugPage({ params }: IndustrySlugPageProps) {
   const { slug } = await params;
 
-  const industry = await fetchQuery(api.industries.getBySlug, { slug });
+  const industry = await fetchQuery(api.industries.getBySlug, { slug }, { url: CONVEX_URL });
 
   if (!industry || !industry.published) {
     notFound();
