@@ -22,13 +22,13 @@ export interface SiteConfig {
 export const siteConfig: SiteConfig = {
   brand: "LOrdEnRYQuE",
   name: "Attila Lazar",
-  role: "AI Engineer • Full-Stack Developer • Product Builder",
-  headline: "AI-Driven Web Experiences & Conversion-Focused Development for Modern Businesses",
-  bio: "Professional developer creating custom websites, mobile apps, and business software for small businesses. Real estate websites, restaurant apps, e-commerce stores, and industry-specific solutions that help your business grow.",
+  role: "Web Designer • Full-Stack Developer • AI Engineer",
+  headline: "Webdesign, Webentwicklung & AI-Lösungen für Unternehmen in Landshut und darüber hinaus",
+  bio: "LOrdEnRYQuE entwickelt moderne Websites, Webanwendungen, E-Commerce-Lösungen, SEO-Strategien und KI-gestützte Automatisierungen für Unternehmen und Selbstständige in Landshut, Bayern und darüber hinaus.",
   domain: process.env.NEXT_PUBLIC_APP_URL || "https://lordenryque.com",
   email: "hello@lordenryque.com",
-  location: "Germany",
-  availability: "Available for freelance projects, MVP builds, AI integrations, and custom business platforms.",
+  location: "Landshut, Bavaria, Germany",
+  availability: "Available for web design, web development, AI integrations, SEO, e-commerce and custom business platforms.",
   socials: {
     github: "https://github.com/lordenryque",
     linkedin: "https://linkedin.com/in/attilalazar",
