@@ -25,9 +25,10 @@ export const metadata: Metadata = constructMetadata({
 
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@convex/_generated/api";
+import { CONVEX_URL } from "@/lib/convex";
 
 export default async function HomePage() {
-  const featuredProjects = await fetchQuery(api.portfolio.getFeatured);
+  const featuredProjects = await fetchQuery(api.portfolio.getFeatured, {}, { url: CONVEX_URL });
 
   return (
     <>
