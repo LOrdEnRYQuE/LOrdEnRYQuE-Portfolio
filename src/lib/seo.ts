@@ -8,15 +8,11 @@ export function constructMetadata({
   icons = "/favicon.ico",
   noIndex = false,
   keywords = [
-    "Web Developer",
+    "Webdesign Landshut",
+    "Webentwicklung Landshut",
+    "SEO Landshut",
     "AI Developer",
-    "Graphic Designer",
-    "Branding",
-    "Portfolio Designer",
-    "Website Developer for Restaurants",
-    "Salon Website Designer",
     "Custom Software Developer",
-    "SaaS Builder",
     "LOrdEnRYQuE"
   ],
   canonical,
@@ -31,18 +27,19 @@ export function constructMetadata({
 } = {}): Metadata {
   const pageTitle = title ? `${title} | ${siteConfig.brand}` : `${siteConfig.brand} — ${siteConfig.role}`;
   const pageDescription = description || siteConfig.bio;
+  const canonicalUrl = new URL(canonical || "/", siteConfig.domain).toString();
 
   const metadata: Metadata = {
     title: pageTitle,
     description: pageDescription,
     keywords: keywords.length > 0 ? keywords : undefined,
     alternates: {
-      canonical: canonical || siteConfig.domain,
+      canonical: canonicalUrl,
     },
     openGraph: {
       type: "website",
-      locale: "en_US",
-      url: siteConfig.domain,
+      locale: "de_DE",
+      url: canonicalUrl,
       title: pageTitle,
       description: pageDescription,
       siteName: siteConfig.brand,
