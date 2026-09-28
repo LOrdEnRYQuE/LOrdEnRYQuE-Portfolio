@@ -1,5 +1,6 @@
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@convex/_generated/api";
+import { CONVEX_URL } from "@/lib/convex";
 import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
@@ -12,7 +13,7 @@ import { constructMetadata } from "@/lib/seo";
 import { Metadata } from "next";
 
 export async function generateStaticParams() {
-  const posts = await fetchQuery(api.posts.getPublishedPosts);
+  const posts = await fetchQuery(api.posts.getPublishedPosts, {}, { url: CONVEX_URL });
   return posts.map((post) => ({
     slug: post.slug,
   }));
@@ -24,7 +25,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }> 
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = await fetchQuery(api.posts.getPostBySlug, { slug });
+  const post = await fetchQuery(api.posts.getPostBySlug, { slug }, { url: CONVEX_URL });
 
   if (!post || !post.published) return {};
 
@@ -43,7 +44,7 @@ interface BlogSlugPageProps {
 export default async function BlogSlugPage({ params }: BlogSlugPageProps) {
   const { slug } = await params;
 
-  const post = await fetchQuery(api.posts.getPostBySlug, { slug });
+  const post = await fetchQuery(api.posts.getPostBySlug, { slug }, { url: CONVEX_URL });
 
   if (!post || !post.published) {
     notFound();
