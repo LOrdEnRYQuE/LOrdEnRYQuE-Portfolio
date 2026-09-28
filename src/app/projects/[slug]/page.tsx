@@ -10,6 +10,8 @@ import { Metadata } from "next";
 import { type PortfolioProject } from "@/components/sections/FeaturedProjects";
 import { type Project as StaticProject } from "@/content/projects";
 
+export const dynamic = "force-dynamic";
+
 // Type to bridge Convex and Static projects
 type PageProject = {
   _id?: any;
@@ -32,20 +34,6 @@ type PageProject = {
   canonicalUrl?: string;
   ogImage?: string;
 };
-
-export async function generateStaticParams() {
-  const projects = await fetchQuery(api.portfolio.listAll, {}, { url: CONVEX_URL });
-  
-  // Combine with static ones just in case
-  const dynamicSlugs = projects.map((p) => ({ slug: p.slug }));
-  const staticSlugs = staticProjects.map((p) => ({ slug: p.slug }));
-  
-  // Dedup slugs
-  const allSlugs = Array.from(new Set([...dynamicSlugs, ...staticSlugs].map(s => s.slug)))
-    .map(slug => ({ slug }));
-
-  return allSlugs;
-}
 
 export async function generateMetadata({ 
   params 
