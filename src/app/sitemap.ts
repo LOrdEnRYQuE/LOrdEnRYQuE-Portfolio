@@ -8,23 +8,22 @@ export const dynamic = "force-dynamic";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = siteConfig.domain;
 
-  // Static core routes
   const staticRoutes = [
     "",
     "/projects",
     "/blog",
     "/contact",
     "/services",
+    "/webdesign-landshut",
     "/industries",
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: "weekly" as const,
-    priority: route === "" ? 1 : 0.8,
+    priority: route === "" ? 1 : route === "/webdesign-landshut" ? 0.95 : 0.8,
   }));
 
   try {
-    // 1. Dynamic Pages
     const allPages = await fetchQuery(api.pages.listAll);
     const pageRoutes = allPages
       .filter((page) => page.published && page.isIndexed !== false)
@@ -35,7 +34,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
       }));
 
-    // 2. Blog Posts
     const posts = await fetchQuery(api.posts.getPublishedPosts);
     const postRoutes = posts
       .filter((post) => post.isIndexed !== false)
@@ -46,7 +44,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.6,
       }));
 
-    // 3. Portfolio Projects
     const projects = await fetchQuery(api.portfolio.listAll);
     const projectRoutes = projects
       .filter((project) => project.isIndexed !== false)
@@ -57,7 +54,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
       }));
 
-    // 4. Specialized Services
     const services = await fetchQuery(api.services.listPublished);
     const serviceRoutes = services
       .filter((s) => s.isIndexed !== false)
@@ -65,10 +61,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         url: `${baseUrl}/services/${s.slug}`,
         lastModified: new Date(s._creationTime),
         changeFrequency: "weekly" as const,
-        priority: 0.9, // High priority for service landing pages
+        priority: 0.9,
       }));
 
-    // 5. Industry Hubs
     const industries = await fetchQuery(api.industries.listPublished);
     const industryRoutes = industries
       .filter((i) => i.isIndexed !== false)
@@ -80,11 +75,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }));
 
     return [
-      ...staticRoutes, 
-      ...pageRoutes, 
-      ...projectRoutes, 
-      ...postRoutes, 
-      ...serviceRoutes, 
+      ...staticRoutes,
+      ...pageRoutes,
+      ...projectRoutes,
+      ...postRoutes,
+      ...serviceRoutes,
       ...industryRoutes
     ];
   } catch (error) {
