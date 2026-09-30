@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { fetchQuery } from "convex/nextjs";
 import { api } from "../convex/_generated/api";
+import { CONVEX_URL } from "./lib/convex";
 
 // We'll wrap the default withAuth so we can add SEO Redirects
 const authMiddleware = withAuth({
@@ -33,7 +34,7 @@ export default async function middleware(req: NextRequest) {
   try {
     // Only check if it's a potential content page
     if (pathname !== "/" && !pathname.startsWith("/login")) {
-      const redirects = await fetchQuery(api.redirects.listAll);
+      const redirects = await fetchQuery(api.redirects.listAll, {}, { url: CONVEX_URL });
       const match = redirects.find(r => r.source === pathname || r.source === pathname.replace(/\/$/, ""));
       
       if (match) {

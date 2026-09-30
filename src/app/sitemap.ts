@@ -2,6 +2,7 @@ import { MetadataRoute } from "next";
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@convex/_generated/api";
 import { siteConfig } from "@/content/site";
+import { CONVEX_URL } from "@/lib/convex";
 
 export const dynamic = "force-dynamic";
 
@@ -24,7 +25,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   try {
-    const allPages = await fetchQuery(api.pages.listAll);
+    const allPages = await fetchQuery(api.pages.listAll, {}, { url: CONVEX_URL });
     const pageRoutes = allPages
       .filter((page) => page.published && page.isIndexed !== false)
       .map((page) => ({
@@ -34,7 +35,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
       }));
 
-    const posts = await fetchQuery(api.posts.getPublishedPosts);
+    const posts = await fetchQuery(api.posts.getPublishedPosts, {}, { url: CONVEX_URL });
     const postRoutes = posts
       .filter((post) => post.isIndexed !== false)
       .map((post) => ({
@@ -44,7 +45,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.6,
       }));
 
-    const projects = await fetchQuery(api.portfolio.listAll);
+    const projects = await fetchQuery(api.portfolio.listAll, {}, { url: CONVEX_URL });
     const projectRoutes = projects
       .filter((project) => project.isIndexed !== false)
       .map((project) => ({
@@ -54,7 +55,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
       }));
 
-    const services = await fetchQuery(api.services.listPublished);
+    const services = await fetchQuery(api.services.listPublished, {}, { url: CONVEX_URL });
     const serviceRoutes = services
       .filter((s) => s.isIndexed !== false)
       .map((s) => ({
@@ -64,7 +65,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.9,
       }));
 
-    const industries = await fetchQuery(api.industries.listPublished);
+    const industries = await fetchQuery(api.industries.listPublished, {}, { url: CONVEX_URL });
     const industryRoutes = industries
       .filter((i) => i.isIndexed !== false)
       .map((i) => ({
