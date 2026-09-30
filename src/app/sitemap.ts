@@ -16,12 +16,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/contact",
     "/services",
     "/webdesign-landshut",
+    "/seo-landshut",
     "/industries",
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: "weekly" as const,
-    priority: route === "" ? 1 : route === "/webdesign-landshut" ? 0.95 : 0.8,
+    priority: route === "" ? 1 : ["/webdesign-landshut", "/seo-landshut"].includes(route) ? 0.95 : 0.8,
   }));
 
   try {
