@@ -31,6 +31,7 @@ const services = [
   {
     title: "Lokale & technische SEO",
     text: "Saubere Informationsarchitektur, technische Optimierung, lokale Relevanzsignale und messbare Suchperformance – ohne Keyword-Stuffing oder Ranking-Versprechen.",
+    href: "/seo-landshut",
   },
   {
     title: "E-Commerce & Online-Shops",
@@ -165,7 +166,15 @@ export default function WebdesignLandshutPage() {
             <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {services.map((service) => (
                 <div key={service.title} className="rounded-2xl border border-white/10 bg-white/[0.03] p-7">
-                  <h3 className="text-xl font-bold">{service.title}</h3>
+                  {service.href ? (
+                    <h3 className="text-xl font-bold">
+                      <Link href={service.href} className="transition hover:text-accent-blue">
+                        {service.title}
+                      </Link>
+                    </h3>
+                  ) : (
+                    <h3 className="text-xl font-bold">{service.title}</h3>
+                  )}
                   <p className="mt-4 leading-relaxed text-foreground/65">{service.text}</p>
                 </div>
               ))}
