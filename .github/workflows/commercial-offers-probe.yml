@@ -1,0 +1,22 @@
+name: Commercial Offers Probe
+
+on:
+  push:
+    branches:
+      - growth/commercial-offers
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec tsc --noEmit
