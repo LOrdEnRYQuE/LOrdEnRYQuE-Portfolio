@@ -47,6 +47,7 @@ import {
   Box
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { trackAnalyticsEvent } from "@/lib/client-analytics";
 
 interface WizardData {
   name: string;
@@ -175,6 +176,9 @@ export default function InquiryWizard() {
   };
 
   const nextStep = () => {
+    if (step === 1) {
+      trackAnalyticsEvent("project_planner_start", { form_name: "project_planner" });
+    }
     setDirection(1);
     setStep(prev => Math.min(prev + 1, STEPS.length));
   };
@@ -263,10 +267,18 @@ ${formattedPlan}
 
       if (!response.ok) throw new Error("Submission failed");
       
+      trackAnalyticsEvent("generate_lead", {
+        form_name: "project_planner",
+        lead_service: data.industry,
+      });
       localStorage.removeItem("lead_draft");
       setIsSuccess(true);
     } catch (error) {
       console.error(error);
+      trackAnalyticsEvent("project_planner_error", {
+        form_name: "project_planner",
+        lead_service: data.industry,
+      });
       alert("Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
