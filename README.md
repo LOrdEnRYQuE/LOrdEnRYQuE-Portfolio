@@ -103,6 +103,8 @@ Then verify that the OpenNext worker and asset directory exist.
 
 Pull requests and pushes to `main` are continuously validated by `.github/workflows/cloudflare-build.yml` using the same Cloudflare/OpenNext production build contract.
 
+Production deployment can be triggered manually with `.github/workflows/cloudflare-deploy.yml`. It requires GitHub repository secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`. The workflow validates credentials, rebuilds the OpenNext artifact, verifies it, and only then runs `wrangler deploy` against the existing Worker defined by `wrangler.json`.
+
 ## Next.js documentation
 
 Framework documentation: https://nextjs.org/docs
