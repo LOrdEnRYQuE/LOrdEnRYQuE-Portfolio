@@ -7,19 +7,11 @@ import InquiryWizard from "@/components/sections/InquiryWizard";
 import QuickInquiry from "@/components/sections/QuickInquiry";
 import { siteConfig } from "@/content/site";
 import { useI18n } from "@/lib/i18n";
+import { trackAnalyticsEvent } from "@/lib/client-analytics";
 
 // Helper for conditional classes
 function cn(...classes: (string | boolean | undefined)[]) {
   return classes.filter(Boolean).join(" ");
-}
-
-function trackEvent(eventName: string, params: Record<string, string> = {}) {
-  if (typeof window === "undefined") return;
-  const gtag = (window as typeof window & {
-    gtag?: (command: "event", eventName: string, params?: Record<string, unknown>) => void;
-  }).gtag;
-
-  gtag?.("event", eventName, params);
 }
 
 export default function ContactView() {
@@ -97,7 +89,7 @@ export default function ContactView() {
                   <motion.a
                     key={i}
                     href={item.href}
-                    onClick={() => trackEvent(item.eventName, { contact_channel: item.channel })}
+                    onClick={() => trackAnalyticsEvent(item.eventName, { contact_channel: item.channel })}
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 + (0.1 * i), duration: 0.5 }}
