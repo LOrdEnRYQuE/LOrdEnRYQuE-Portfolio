@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:full": "concurrently \"npx convex dev\" \"npm run dev\"",
+    "dev:full": "concurrently \"pnpm exec convex dev\" \"pnpm dev\"",
     "build": "opennextjs-cloudflare build",
     "start": "next start",
     "lint": "eslint",
@@ -45,5 +45,6 @@
     "tailwindcss": "^4",
     "typescript": "^5",
     "wrangler": "^4.76.0"
-  }
+  },
+  "packageManager": "pnpm@10.34.6"
 }
