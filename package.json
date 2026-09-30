@@ -2,6 +2,10 @@
   "name": "lordenryque-portfolio",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.34.6",
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "dev": "next dev",
     "dev:full": "concurrently \"npx convex dev\" \"npm run dev\"",
