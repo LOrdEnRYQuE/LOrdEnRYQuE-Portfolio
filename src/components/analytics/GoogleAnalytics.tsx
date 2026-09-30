@@ -10,6 +10,10 @@ type ConsentDetail = {
   status?: "accepted" | "declined";
 };
 
+type AnalyticsWindow = typeof window & {
+  gtag?: (...args: unknown[]) => void;
+};
+
 export default function GoogleAnalytics() {
   const [enabled, setEnabled] = useState(false);
 
@@ -20,7 +24,13 @@ export default function GoogleAnalytics() {
 
     const handleConsentChange = (event: Event) => {
       const detail = (event as CustomEvent<ConsentDetail>).detail;
-      setEnabled(detail?.status === "accepted");
+      const accepted = detail?.status === "accepted";
+      const analyticsWindow = window as AnalyticsWindow;
+
+      analyticsWindow.gtag?.("consent", "update", {
+        analytics_storage: accepted ? "granted" : "denied",
+      });
+      setEnabled(accepted);
     };
 
     applyStoredConsent();
@@ -44,6 +54,7 @@ export default function GoogleAnalytics() {
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           window.gtag = window.gtag || gtag;
+          gtag('consent', 'update', { analytics_storage: 'granted' });
           gtag('js', new Date());
           gtag('config', '${MEASUREMENT_ID}', {
             send_page_view: true,

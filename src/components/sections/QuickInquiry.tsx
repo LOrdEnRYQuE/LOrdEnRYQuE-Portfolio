@@ -128,6 +128,8 @@ export default function QuickInquiry() {
           timeline: "tbd",
           budget: "custom",
           stack: "Quick Inquiry",
+          privacyAccepted: data.privacyAccepted,
+          source: "quick_inquiry",
         }),
       });
 
@@ -161,7 +163,11 @@ export default function QuickInquiry() {
         <p className="mt-3 max-w-xl leading-relaxed text-text-secondary">{copy.successText}</p>
         <button
           type="button"
-          onClick={() => setIsSuccess(false)}
+          onClick={() => {
+            setIsSuccess(false);
+            setHasStarted(false);
+            setError("");
+          }}
           className="mt-6 inline-flex items-center gap-2 rounded-xl border border-white/10 px-5 py-3 text-sm font-bold text-foreground transition hover:border-accent/40 hover:bg-white/5"
         >
           {copy.another}
