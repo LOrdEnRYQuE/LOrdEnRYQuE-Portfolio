@@ -24,6 +24,7 @@ import { I18nProvider } from "@/lib/i18n";
 import NextAuthProvider from "@/components/providers/NextAuthProvider";
 import JSONLD from "@/components/layout/JSONLD";
 import CookieConsent from "@/components/layout/CookieConsent";
+import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
 import FramerMotionProvider from "@/components/providers/FramerMotionProvider";
 
 import { ConvexClientProvider } from "@/components/ConvexClientProvider";
@@ -48,6 +49,7 @@ export default function RootLayout({
               <Navbar />
               <main>{children}</main>
                 <Footer />
+                <GoogleAnalytics />
                 <CookieConsent />
               </ConvexClientProvider>
             </NextAuthProvider>

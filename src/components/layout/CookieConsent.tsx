@@ -17,15 +17,16 @@ export default function CookieConsent() {
     }
   }, []);
 
-  const handleAccept = () => {
-    localStorage.setItem("cookie-consent", "accepted");
+  const updateConsent = (status: "accepted" | "declined") => {
+    localStorage.setItem("cookie-consent", status);
+    window.dispatchEvent(
+      new CustomEvent("cookie-consent-change", { detail: { status } })
+    );
     setIsVisible(false);
   };
 
-  const handleDecline = () => {
-    localStorage.setItem("cookie-consent", "declined");
-    setIsVisible(false);
-  };
+  const handleAccept = () => updateConsent("accepted");
+  const handleDecline = () => updateConsent("declined");
 
   return (
     <AnimatePresence>

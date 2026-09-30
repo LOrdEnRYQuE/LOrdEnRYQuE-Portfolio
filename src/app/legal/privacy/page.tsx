@@ -45,8 +45,8 @@ export default function PrivacyPolicyPage() {
       icon: ShieldCheck,
       title: locale === "de" ? "3. Analyse-Tools und Tools von Drittanbietern" : "3. Analysis Tools and Third-Party Tools",
       content: locale === "de"
-        ? "Beim Besuch dieser Website kann Ihr Surf-Verhalten statistisch ausgewertet werden. Das geschieht vor allem mit Cookies und mit sogenannten Analyse-Programmen. Die Analyse Ihres Surf-Verhaltens erfolgt in der Regel anonym; das Surf-Verhalten kann nicht zu Ihnen zurückverfolgt werden."
-        : "When you visit this website, your surfing behavior can be statistically evaluated. This happens primarily with cookies and with so-called analysis programs. The analysis of your surfing behavior is usually anonymous; the surfing behavior cannot be traced back to you."
+        ? "Google Analytics 4 (Google Ireland Limited) wird auf dieser Website nur nach Ihrer ausdrücklichen Einwilligung über den Cookie-Banner geladen. Dabei können Nutzungs- und Ereignisdaten verarbeitet werden, um die Nutzung der Website zu messen und zu verbessern. Rechtsgrundlage ist Art. 6 Abs. 1 lit. a DSGVO. Ohne Ihre Zustimmung wird Google Analytics nicht geladen."
+        : "Google Analytics 4 (Google Ireland Limited) is loaded on this website only after your explicit consent through the cookie banner. Usage and event data may then be processed to measure and improve the website. The legal basis is your consent under Art. 6(1)(a) GDPR. Without your consent, Google Analytics is not loaded."
     },
     {
       icon: Scale,
