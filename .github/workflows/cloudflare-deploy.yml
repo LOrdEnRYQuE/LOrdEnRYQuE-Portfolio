@@ -62,4 +62,4 @@ jobs:
           test -d .open-next/assets
 
       - name: Deploy existing Worker
-        run: pnpm exec wrangler deploy
+        run: pnpm exec wrangler deploy --keep-vars --strict

@@ -9,5 +9,9 @@
   "compatibility_flags": [
     "nodejs_compat"
   ],
-  "minify": true
+  "minify": true,
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "observability": {
+    "enabled": true
+  }
 }
