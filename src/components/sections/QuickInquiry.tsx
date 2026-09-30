@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, Mail, Phone, Send } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { trackAnalyticsEvent } from "@/lib/client-analytics";
 
 type QuickInquiryData = {
   name: string;
@@ -22,15 +23,6 @@ const INITIAL_DATA: QuickInquiryData = {
   message: "",
   privacyAccepted: false,
 };
-
-function trackEvent(eventName: string, params: Record<string, string | number | boolean> = {}) {
-  if (typeof window === "undefined") return;
-  const gtag = (window as typeof window & {
-    gtag?: (command: "event", eventName: string, params?: Record<string, unknown>) => void;
-  }).gtag;
-
-  gtag?.("event", eventName, params);
-}
 
 export default function QuickInquiry() {
   const { locale } = useI18n();
@@ -100,7 +92,7 @@ export default function QuickInquiry() {
   const startTracking = () => {
     if (hasStarted) return;
     setHasStarted(true);
-    trackEvent("quick_inquiry_start", { form_name: "quick_inquiry" });
+    trackAnalyticsEvent("quick_inquiry_start", { form_name: "quick_inquiry" });
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -141,7 +133,7 @@ export default function QuickInquiry() {
 
       if (!response.ok) throw new Error("Submission failed");
 
-      trackEvent("generate_lead", {
+      trackAnalyticsEvent("generate_lead", {
         form_name: "quick_inquiry",
         lead_service: data.service,
       });
@@ -150,7 +142,7 @@ export default function QuickInquiry() {
       setData(INITIAL_DATA);
     } catch {
       setError(copy.error);
-      trackEvent("quick_inquiry_error", {
+      trackAnalyticsEvent("quick_inquiry_error", {
         form_name: "quick_inquiry",
         lead_service: data.service,
       });
