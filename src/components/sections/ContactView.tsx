@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Mail, MessageSquare, MapPin, Sparkles, ArrowRight } from "lucide-react";
+import { Mail, MessageSquare, MapPin, Phone, Sparkles, ArrowRight } from "lucide-react";
 import InquiryWizard from "@/components/sections/InquiryWizard";
 import QuickInquiry from "@/components/sections/QuickInquiry";
 import { siteConfig } from "@/content/site";
@@ -75,6 +75,15 @@ export default function ContactView() {
                     color: "text-green-500",
                     eventName: "click_whatsapp",
                     channel: "whatsapp",
+                  },
+                  {
+                    icon: Phone,
+                    label: isDe ? "Telefon" : "Phone",
+                    value: "0172 2620671",
+                    href: "tel:+491722620671",
+                    color: "text-blue-400",
+                    eventName: "click_phone",
+                    channel: "phone",
                   },
                   { 
                     icon: MapPin, 
