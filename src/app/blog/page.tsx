@@ -1,11 +1,12 @@
 import BlogListing from "@/components/blog/BlogListing";
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@convex/_generated/api";
+import { CONVEX_URL } from "@/lib/convex";
 
 export const dynamic = "force-dynamic";
 
 export default async function BlogPage() {
-  const posts = await fetchQuery(api.posts.getPublishedPosts);
+  const posts = await fetchQuery(api.posts.getPublishedPosts, {}, { url: CONVEX_URL });
 
   return (
     <div className="relative min-h-screen">
