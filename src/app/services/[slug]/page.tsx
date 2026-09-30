@@ -1,5 +1,6 @@
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@convex/_generated/api";
+import { CONVEX_URL } from "@/lib/convex";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
@@ -9,20 +10,13 @@ import { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
 
-export async function generateStaticParams() {
-  const services = await fetchQuery(api.services.listPublished);
-  return services.map((service) => ({
-    slug: service.slug,
-  }));
-}
-
 export async function generateMetadata({ 
   params 
 }: { 
   params: Promise<{ slug: string }> 
 }): Promise<Metadata> {
   const { slug } = await params;
-  const service = await fetchQuery(api.services.getBySlug, { slug });
+  const service = await fetchQuery(api.services.getBySlug, { slug }, { url: CONVEX_URL });
 
   if (!service || !service.published) return {};
 
@@ -42,7 +36,7 @@ interface ServiceSlugPageProps {
 export default async function ServiceSlugPage({ params }: ServiceSlugPageProps) {
   const { slug } = await params;
 
-  const service = await fetchQuery(api.services.getBySlug, { slug });
+  const service = await fetchQuery(api.services.getBySlug, { slug }, { url: CONVEX_URL });
 
   if (!service || !service.published) {
     notFound();
