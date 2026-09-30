@@ -4,6 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Mail, MessageSquare, MapPin, Sparkles, ArrowRight } from "lucide-react";
 import InquiryWizard from "@/components/sections/InquiryWizard";
+import QuickInquiry from "@/components/sections/QuickInquiry";
 import { siteConfig } from "@/content/site";
 import { useI18n } from "@/lib/i18n";
 
@@ -12,8 +13,19 @@ function cn(...classes: (string | boolean | undefined)[]) {
   return classes.filter(Boolean).join(" ");
 }
 
+function trackEvent(eventName: string, params: Record<string, string> = {}) {
+  if (typeof window === "undefined") return;
+  const gtag = (window as typeof window & {
+    gtag?: (command: "event", eventName: string, params?: Record<string, unknown>) => void;
+  }).gtag;
+
+  gtag?.("event", eventName, params);
+}
+
 export default function ContactView() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const isDe = locale === "de";
+
   return (
     <main className="min-h-screen bg-background relative overflow-hidden">
       {/* Decorative Gradient Elements */}
@@ -59,26 +71,33 @@ export default function ContactView() {
                     label: t("contact.view.email"), 
                     value: siteConfig.email, 
                     href: `mailto:${siteConfig.email}`,
-                    color: "text-accent"
+                    color: "text-accent",
+                    eventName: "click_email",
+                    channel: "email",
                   },
                   { 
                     icon: MessageSquare, 
                     label: t("contact.view.whatsapp"), 
                     value: "+491722620671", 
                     href: "https://wa.me/491722620671",
-                    color: "text-green-500"
+                    color: "text-green-500",
+                    eventName: "click_whatsapp",
+                    channel: "whatsapp",
                   },
                   { 
                     icon: MapPin, 
                     label: t("contact.view.location"), 
                     value: t("contact.view.address"), 
                     href: "#",
-                    color: "text-emerald-400"
+                    color: "text-emerald-400",
+                    eventName: "click_location",
+                    channel: "location",
                   },
                 ].map((item, i) => (
                   <motion.a
                     key={i}
                     href={item.href}
+                    onClick={() => trackEvent(item.eventName, { contact_channel: item.channel })}
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 + (0.1 * i), duration: 0.5 }}
@@ -102,13 +121,23 @@ export default function ContactView() {
               </div>
             </motion.div>
 
-            {/* Right Column: Wizard Container */}
+            {/* Right Column: Conversion paths */}
             <motion.div 
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
-              className="lg:col-span-7"
+              className="lg:col-span-7 space-y-8"
             >
+              <QuickInquiry />
+
+              <div className="flex items-center gap-4 px-2">
+                <div className="h-px flex-1 bg-white/10" />
+                <span className="text-[10px] font-black uppercase tracking-[0.26em] text-white/30">
+                  {isDe ? "Komplexeres Projekt?" : "More complex project?"}
+                </span>
+                <div className="h-px flex-1 bg-white/10" />
+              </div>
+
               <div className="relative group">
                 {/* Visual Accent */}
                 <div className="absolute -top-10 -right-10 w-40 h-40 bg-accent/20 blur-[60px] rounded-full opacity-50 group-hover:opacity-100 transition-opacity duration-1000" />
