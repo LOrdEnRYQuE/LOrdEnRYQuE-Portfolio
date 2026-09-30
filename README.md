@@ -101,6 +101,8 @@ pnpm build
 
 Then verify that the OpenNext worker and asset directory exist.
 
+Pull requests and pushes to `main` are continuously validated by `.github/workflows/cloudflare-build.yml` using the same Cloudflare/OpenNext production build contract.
+
 ## Next.js documentation
 
 Framework documentation: https://nextjs.org/docs
