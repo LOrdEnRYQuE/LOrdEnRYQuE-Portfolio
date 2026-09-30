@@ -19,7 +19,7 @@ export default function ContactView() {
   const isDe = locale === "de";
 
   return (
-    <main className="min-h-screen bg-background relative overflow-hidden">
+    <div className="min-h-screen bg-background relative overflow-hidden">
       {/* Decorative Gradient Elements */}
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent/10 blur-[130px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none opacity-50" />
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/10 blur-[120px] rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none opacity-30" />
@@ -172,6 +172,6 @@ export default function ContactView() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

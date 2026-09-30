@@ -257,7 +257,7 @@ export default function QuickInquiry() {
           />
           <span>
             {copy.privacy}{" "}
-            <Link href="/privacy" className="font-bold text-accent hover:underline">
+            <Link href="/legal/privacy" className="font-bold text-accent hover:underline">
               {isDe ? "Datenschutz" : "Privacy"}
             </Link>
           </span>
