@@ -16,6 +16,7 @@ export function constructMetadata({
     "LOrdEnRYQuE"
   ],
   canonical,
+  locale = "de_DE",
 }: {
   title?: string;
   description?: string;
@@ -24,6 +25,7 @@ export function constructMetadata({
   noIndex?: boolean;
   keywords?: string[];
   canonical?: string;
+  locale?: string;
 } = {}): Metadata {
   const pageTitle = title ? `${title} | ${siteConfig.brand}` : `${siteConfig.brand} — ${siteConfig.role}`;
   const pageDescription = description || siteConfig.bio;
@@ -38,7 +40,7 @@ export function constructMetadata({
     },
     openGraph: {
       type: "website",
-      locale: "de_DE",
+      locale,
       url: canonicalUrl,
       title: pageTitle,
       description: pageDescription,
