@@ -46,6 +46,11 @@ export const createLead = mutation({
     features: v.optional(v.string()),
     timeline: v.optional(v.string()),
     stack: v.optional(v.string()),
+    source: v.optional(v.string()),
+    privacyAccepted: v.optional(v.boolean()),
+    termsAccepted: v.optional(v.boolean()),
+    communicationAccepted: v.optional(v.boolean()),
+    consentAt: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const score = calculateLeadScore(args);
@@ -58,6 +63,11 @@ export const createLead = mutation({
       features: args.features || "[]",
       timeline: args.timeline,
       stack: args.stack,
+      source: args.source,
+      privacyAccepted: args.privacyAccepted,
+      termsAccepted: args.termsAccepted,
+      communicationAccepted: args.communicationAccepted,
+      consentAt: args.consentAt,
       status: "NEW",
       score,
     });

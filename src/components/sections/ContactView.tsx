@@ -2,10 +2,12 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Mail, MessageSquare, MapPin, Sparkles, ArrowRight } from "lucide-react";
+import { Mail, MessageSquare, MapPin, Phone, Sparkles, ArrowRight } from "lucide-react";
 import InquiryWizard from "@/components/sections/InquiryWizard";
+import QuickInquiry from "@/components/sections/QuickInquiry";
 import { siteConfig } from "@/content/site";
 import { useI18n } from "@/lib/i18n";
+import { trackAnalyticsEvent } from "@/lib/client-analytics";
 
 // Helper for conditional classes
 function cn(...classes: (string | boolean | undefined)[]) {
@@ -13,9 +15,11 @@ function cn(...classes: (string | boolean | undefined)[]) {
 }
 
 export default function ContactView() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const isDe = locale === "de";
+
   return (
-    <main className="min-h-screen bg-background relative overflow-hidden">
+    <div className="min-h-screen bg-background relative overflow-hidden">
       {/* Decorative Gradient Elements */}
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent/10 blur-[130px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none opacity-50" />
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/10 blur-[120px] rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none opacity-30" />
@@ -59,26 +63,42 @@ export default function ContactView() {
                     label: t("contact.view.email"), 
                     value: siteConfig.email, 
                     href: `mailto:${siteConfig.email}`,
-                    color: "text-accent"
+                    color: "text-accent",
+                    eventName: "click_email",
+                    channel: "email",
                   },
                   { 
                     icon: MessageSquare, 
                     label: t("contact.view.whatsapp"), 
                     value: "+491722620671", 
                     href: "https://wa.me/491722620671",
-                    color: "text-green-500"
+                    color: "text-green-500",
+                    eventName: "click_whatsapp",
+                    channel: "whatsapp",
+                  },
+                  {
+                    icon: Phone,
+                    label: isDe ? "Telefon" : "Phone",
+                    value: "0172 2620671",
+                    href: "tel:+491722620671",
+                    color: "text-blue-400",
+                    eventName: "click_phone",
+                    channel: "phone",
                   },
                   { 
                     icon: MapPin, 
                     label: t("contact.view.location"), 
                     value: t("contact.view.address"), 
                     href: "#",
-                    color: "text-emerald-400"
+                    color: "text-emerald-400",
+                    eventName: "click_location",
+                    channel: "location",
                   },
                 ].map((item, i) => (
                   <motion.a
                     key={i}
                     href={item.href}
+                    onClick={() => trackAnalyticsEvent(item.eventName, { contact_channel: item.channel })}
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 + (0.1 * i), duration: 0.5 }}
@@ -102,13 +122,23 @@ export default function ContactView() {
               </div>
             </motion.div>
 
-            {/* Right Column: Wizard Container */}
+            {/* Right Column: Conversion paths */}
             <motion.div 
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
-              className="lg:col-span-7"
+              className="lg:col-span-7 space-y-8"
             >
+              <QuickInquiry />
+
+              <div className="flex items-center gap-4 px-2">
+                <div className="h-px flex-1 bg-white/10" />
+                <span className="text-[10px] font-black uppercase tracking-[0.26em] text-white/30">
+                  {isDe ? "Komplexeres Projekt?" : "More complex project?"}
+                </span>
+                <div className="h-px flex-1 bg-white/10" />
+              </div>
+
               <div className="relative group">
                 {/* Visual Accent */}
                 <div className="absolute -top-10 -right-10 w-40 h-40 bg-accent/20 blur-[60px] rounded-full opacity-50 group-hover:opacity-100 transition-opacity duration-1000" />
@@ -142,6 +172,6 @@ export default function ContactView() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

@@ -47,6 +47,7 @@ import {
   Box
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { trackAnalyticsEvent } from "@/lib/client-analytics";
 
 interface WizardData {
   name: string;
@@ -153,6 +154,7 @@ export default function InquiryWizard() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [direction, setDirection] = useState(1);
+  const [hasTrackedStart, setHasTrackedStart] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem("lead_draft");
@@ -172,6 +174,12 @@ export default function InquiryWizard() {
 
   const updateData = (fields: Partial<WizardData>) => {
     setData(prev => ({ ...prev, ...fields }));
+  };
+
+  const markPlannerStarted = () => {
+    if (hasTrackedStart) return;
+    setHasTrackedStart(true);
+    trackAnalyticsEvent("project_planner_start", { form_name: "project_planner" });
   };
 
   const nextStep = () => {
@@ -258,15 +266,24 @@ ${formattedPlan}
           features: JSON.stringify(data.features),
           description: formattedPlan,
           stack: data.features.join(", "),
+          source: "project_planner",
         }),
       });
 
       if (!response.ok) throw new Error("Submission failed");
       
+      trackAnalyticsEvent("generate_lead", {
+        form_name: "project_planner",
+        lead_service: data.industry,
+      });
       localStorage.removeItem("lead_draft");
       setIsSuccess(true);
     } catch (error) {
       console.error(error);
+      trackAnalyticsEvent("project_planner_error", {
+        form_name: "project_planner",
+        lead_service: data.industry,
+      });
       alert("Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -343,7 +360,7 @@ ${formattedPlan}
             <Download size={20} className="mr-3" />
             {t("contact.wizard.success.download")}
           </Button>
-          <Button variant="outline" onClick={() => { setIsSuccess(false); setStep(1); setData(INITIAL_DATA); }} className="rounded-2xl px-10 py-6 font-bold">
+          <Button variant="outline" onClick={() => { setIsSuccess(false); setStep(1); setData(INITIAL_DATA); setHasTrackedStart(false); }} className="rounded-2xl px-10 py-6 font-bold">
             {t("contact.wizard.success.button")}
           </Button>
         </div>
@@ -352,7 +369,11 @@ ${formattedPlan}
   }
 
   return (
-    <div className="w-full">
+    <div
+      className="w-full"
+      onFocusCapture={markPlannerStarted}
+      onPointerDownCapture={markPlannerStarted}
+    >
       <div className="flex justify-between items-center mb-12 gap-2">
         {STEPS.map((s, i) => (
           <div key={i} className="flex-1 flex flex-col gap-2">

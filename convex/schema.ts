@@ -94,6 +94,11 @@ export default defineSchema({
     features: v.string(), // JSON string
     timeline: v.optional(v.string()),
     stack: v.optional(v.string()),
+    source: v.optional(v.string()),
+    privacyAccepted: v.optional(v.boolean()),
+    termsAccepted: v.optional(v.boolean()),
+    communicationAccepted: v.optional(v.boolean()),
+    consentAt: v.optional(v.string()),
     status: v.string(),
     score: v.optional(v.number()), // 0-100 CRM score
     notes: v.optional(v.string()), // Internal admin notes

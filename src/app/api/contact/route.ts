@@ -19,12 +19,25 @@ export async function POST(req: Request) {
       features, 
       timeline, 
       budget,
-      stack 
+      stack,
+      privacyAccepted,
+      agreedToTerms,
+      agreedToCommunication,
+      source
     } = await req.json();
 
     if (!name || !email) {
       return NextResponse.json({ error: "Missing required identity fields" }, { status: 400 });
     }
+
+    const privacyConsent = privacyAccepted === true;
+    const plannerConsent = agreedToTerms === true && agreedToCommunication === true;
+
+    if (!privacyConsent && !plannerConsent) {
+      return NextResponse.json({ error: "Required consent was not accepted" }, { status: 400 });
+    }
+
+    const consentAt = new Date().toISOString();
 
     // 1. Persist to Database (Lead) via Convex
     let leadId = null;
@@ -38,6 +51,11 @@ export async function POST(req: Request) {
         features: features || "[]",
         timeline,
         stack: stack || budget,
+        source: source || "contact_form",
+        privacyAccepted: privacyConsent,
+        termsAccepted: agreedToTerms === true,
+        communicationAccepted: agreedToCommunication === true,
+        consentAt,
       });
       console.log("Lead persisted successfully to Convex:", leadId);
     } catch (dbError) {
@@ -92,7 +110,13 @@ export async function POST(req: Request) {
           <p><strong>Tech/Features:</strong> ${parsedFeatures.join(', ')}</p>
         `,
         folder: "INBOX",
-        metadata: JSON.stringify({ name, project: concept, type: "lead" }),
+        metadata: JSON.stringify({
+          name,
+          project: concept,
+          type: "lead",
+          source: source || "contact_form",
+          consentAt,
+        }),
       });
     } catch (emailLogError) {
       console.error("Failed to log internal email index:", emailLogError);
