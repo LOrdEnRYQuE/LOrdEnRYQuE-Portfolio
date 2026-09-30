@@ -3,9 +3,9 @@ import { constructMetadata } from "@/lib/seo";
 import CommercialServices from "@/components/sections/CommercialServices";
 
 export const metadata: Metadata = constructMetadata({
-  title: "Webdesign, Local SEO & Automatisierung – Leistungen",
+  title: "Web Design, Local SEO & Automation Services",
   description:
-    "Klare digitale Angebote für Unternehmen: individuelle Business Websites, Local Growth mit SEO und Google Business Profile sowie Web-Apps und Automatisierungen.",
+    "Clear digital offers for businesses: custom business websites, local growth with SEO and Google Business Profile, plus web apps and automation.",
   keywords: [
     "Webdesign Landshut",
     "Webentwicklung Landshut",

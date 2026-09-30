@@ -215,7 +215,7 @@ export default function CommercialServices() {
   ];
 
   return (
-    <main className="min-h-screen px-6 pb-24 pt-32 md:px-10">
+    <div className="min-h-screen px-6 pb-24 pt-32 md:px-10">
       <section className="mx-auto max-w-7xl">
         <div className="max-w-4xl">
           <p className="text-xs font-black uppercase tracking-[0.28em] text-accent">{copy.badge}</p>
@@ -300,15 +300,17 @@ export default function CommercialServices() {
           })}
         </div>
 
-        <div className="mt-8 flex justify-center">
-          <Link
-            href="/webdesign-landshut"
-            className="inline-flex items-center gap-2 text-sm font-bold text-accent hover:underline"
-          >
-            {copy.details}
-            <ArrowRight size={15} />
-          </Link>
-        </div>
+        {de && (
+          <div className="mt-8 flex justify-center">
+            <Link
+              href="/webdesign-landshut"
+              className="inline-flex items-center gap-2 text-sm font-bold text-accent hover:underline"
+            >
+              {copy.details}
+              <ArrowRight size={15} />
+            </Link>
+          </div>
+        )}
       </section>
 
       <section className="mx-auto mt-28 max-w-7xl border-t border-white/10 pt-20">
@@ -360,6 +362,6 @@ export default function CommercialServices() {
           <ArrowRight size={16} />
         </Link>
       </section>
-    </main>
+    </div>
   );
 }

@@ -2,12 +2,15 @@ import React from "react";
 import { notFound } from "next/navigation";
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@convex/_generated/api";
+import { CONVEX_URL } from "@/lib/convex";
 import { projects as staticProjects } from "@/content/projects";
 import { ProjectDetail } from "@/components/sections/ProjectDetail";
 import { constructMetadata } from "@/lib/seo";
 import { Metadata } from "next";
 import { type PortfolioProject } from "@/components/sections/FeaturedProjects";
 import { type Project as StaticProject } from "@/content/projects";
+
+export const dynamic = "force-dynamic";
 
 // Type to bridge Convex and Static projects
 type PageProject = {
@@ -32,20 +35,6 @@ type PageProject = {
   ogImage?: string;
 };
 
-export async function generateStaticParams() {
-  const projects = await fetchQuery(api.portfolio.listAll);
-  
-  // Combine with static ones just in case
-  const dynamicSlugs = projects.map((p) => ({ slug: p.slug }));
-  const staticSlugs = staticProjects.map((p) => ({ slug: p.slug }));
-  
-  // Dedup slugs
-  const allSlugs = Array.from(new Set([...dynamicSlugs, ...staticSlugs].map(s => s.slug)))
-    .map(slug => ({ slug }));
-
-  return allSlugs;
-}
-
 export async function generateMetadata({ 
   params 
 }: { 
@@ -54,7 +43,7 @@ export async function generateMetadata({
   const { slug } = await params;
   
   // Try dynamic first
-  let project: any = await fetchQuery(api.portfolio.getBySlug, { slug });
+  let project: any = await fetchQuery(api.portfolio.getBySlug, { slug }, { url: CONVEX_URL });
   
   // Fallback to static
   if (!project) {
@@ -79,7 +68,7 @@ export default async function ProjectDetailPage({
   const { slug } = await params;
   
   // Try dynamic first
-  let project: any = await fetchQuery(api.portfolio.getBySlug, { slug });
+  let project: any = await fetchQuery(api.portfolio.getBySlug, { slug }, { url: CONVEX_URL });
   
   // Fallback to static
   if (!project) {
