@@ -1,38 +1,108 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LOrdEnRYQuE Portfolio
 
-## Getting Started
+Production website for **LOrdEnRYQuE | Advanced Digital Solution**.
 
-This project uses Convex for the backend. Make sure to start both the Convex dev server and Next.js:
+## Stack
+
+- Next.js 15
+- React 19
+- TypeScript
+- Convex
+- Tailwind CSS
+- OpenNext for Cloudflare
+- Cloudflare Workers
+
+## Local development
+
+Install dependencies:
 
 ```bash
-# Option 1: Start both servers concurrently
-npm run dev:full
-
-# Option 2: Start manually in separate terminals
-# Terminal 1: Start Convex
-npx convex dev
-
-# Terminal 2: Start Next.js
-npm run dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Run the Next.js app:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Run Next.js and Convex together:
 
-## Learn More
+```bash
+pnpm dev:full
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Production target
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Cloudflare Workers is the only production deployment target for this repository.**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The application is adapted for Workers with `@opennextjs/cloudflare`.
 
-## Deploy on Vercel
+Build the Cloudflare artifact:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+pnpm build
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The build must produce:
+
+```text
+.open-next/worker.js
+.open-next/assets/
+```
+
+Preview in the Cloudflare Workers runtime:
+
+```bash
+pnpm preview
+```
+
+Deploy to Cloudflare Workers:
+
+```bash
+pnpm deploy
+```
+
+Generate Cloudflare binding types:
+
+```bash
+pnpm cf-typegen
+```
+
+## Deployment source of truth
+
+Production builds must use:
+
+- Git provider: GitHub
+- Repository: `LOrdEnRYQuE/LOrdEnRYQuE-Portfolio`
+- Production branch: `main`
+- Root directory: repository root
+- Runtime: Cloudflare Workers
+- Adapter: OpenNext
+- Build command: `pnpm build`
+
+The active Worker identity and custom-domain binding are managed in Cloudflare and must match the production Worker before any Worker-name change is committed.
+
+## Environment configuration
+
+Build/runtime secrets and environment variables belong in Cloudflare configuration, not in committed source files.
+
+Typical required values include Convex, authentication, email and other service credentials used by the application.
+
+## Release verification
+
+Before production promotion:
+
+```bash
+pnpm install --frozen-lockfile
+pnpm exec tsc --noEmit
+pnpm build
+```
+
+Then verify that the OpenNext worker and asset directory exist.
+
+Pull requests and pushes to `main` are continuously validated by `.github/workflows/cloudflare-build.yml` using the same Cloudflare/OpenNext production build contract.
+
+## Next.js documentation
+
+Framework documentation: https://nextjs.org/docs

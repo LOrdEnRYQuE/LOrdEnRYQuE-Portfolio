@@ -4,10 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:full": "concurrently \"npx convex dev\" \"npm run dev\"",
-    "build": "npx @opennextjs/cloudflare build",
+    "dev:full": "concurrently \"pnpm exec convex dev\" \"pnpm dev\"",
+    "build": "opennextjs-cloudflare build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.43",
@@ -42,5 +45,6 @@
     "tailwindcss": "^4",
     "typescript": "^5",
     "wrangler": "^4.76.0"
-  }
+  },
+  "packageManager": "pnpm@10.34.6"
 }

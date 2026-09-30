@@ -15,6 +15,7 @@ export const metadata: Metadata = constructMetadata({
     "Business Website",
   ],
   canonical: "/services",
+  locale: "en_US",
 });
 
 export default function ServicesPage() {

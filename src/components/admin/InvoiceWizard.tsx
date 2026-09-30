@@ -97,7 +97,7 @@ export default function InvoiceWizard({ clients, onSave, saving, initialData }: 
         frontend: "React / Next.js",
         backend: "Node.js (Express/Hono)",
         database: "PostgreSQL",
-        infrastructure: "Vercel / AWS",
+        infrastructure: "Cloudflare Workers",
         licenses: [],
       },
       deliverables: {
@@ -424,7 +424,7 @@ export default function InvoiceWizard({ clients, onSave, saving, initialData }: 
                           value={data.stack.infrastructure}
                           onChange={(e) => updateNested("stack", "infrastructure", e.target.value)}
                           className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:border-white/20 transition-all"
-                          placeholder="AWS, Vercel, Netlify..."
+                          placeholder="Cloudflare Workers, AWS, Hetzner..."
                         />
                       </div>
                       <div className="space-y-2">
