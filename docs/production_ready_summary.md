@@ -27,6 +27,6 @@ The `EPERM` error on `node_modules` is a result of a **Sandbox Whitelist Discrep
 
 ### Your Path Forward:
 1. **Sandbox Fix**: Ask your infrastructure provider to update the whitelist to include the correct `my-portfolio-v2` path.
-2. **Deployment**: Since the code is now centralized and secured, you can deploy directly to **Cloudflare Pages** or **Vercel** by linking your GitHub repo; their build environments will bypass these sandbox restrictions.
+2. **Deployment**: Production is standardized on **Cloudflare Workers with OpenNext** from the GitHub repository `LOrdEnRYQuE/LOrdEnRYQuE-Portfolio`. Build and runtime configuration must stay aligned with the Worker environment.
 
 The project is now structurally ready for high-traffic production use.
